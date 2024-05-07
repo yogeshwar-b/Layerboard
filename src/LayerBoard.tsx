@@ -1,5 +1,5 @@
-function App() {
+function LayerBoard() {
   return <>LayerBoard</>
 }
 
-export default App
+export default LayerBoard
