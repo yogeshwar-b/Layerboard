@@ -1,0 +1,26 @@
+/* general util classes implementation */
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.height-max {
+  height: 100%;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+div {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: solid 2px black;
+}
