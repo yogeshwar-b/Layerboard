@@ -1,5 +1,9 @@
 /* general util classes implementation */
 
+:root {
+  --palette-height: 4rem;
+}
+
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -30,6 +34,10 @@
   margin: 0.3em;
 }
 
+.palette {
+  height: var(--palette-height);
+}
+
 .rounded-1 {
   border-radius: 1rem;
 }
@@ -43,4 +51,8 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   border: solid 1px rgb(211, 211, 211);
+}
+
+.text-center {
+  text-align: center;
 }
