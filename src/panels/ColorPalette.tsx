@@ -1,3 +1,6 @@
-export const ColorPalette = () => {
-  return <div>ColorPalette</div>
+interface ColorPaletteProps {
+  className: string
+}
+export const ColorPalette = (props: ColorPaletteProps) => {
+  return <div className={props.className}>ColorPalette</div>
 }

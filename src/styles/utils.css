@@ -1,5 +1,9 @@
 /* general util classes implementation */
 
+:root {
+  --palette-height: 4rem;
+}
+
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -14,13 +18,41 @@
   height: 100%;
 }
 
+.height-auto {
+  height: auto;
+}
+
 .flex-grow {
   flex-grow: 1;
 }
 
-div {
+.p-1 {
+  padding: 0.3em;
+}
+
+.m-1 {
+  margin: 0.3em;
+}
+
+.palette {
+  height: var(--palette-height);
+}
+
+.rounded-1 {
+  border-radius: 1rem;
+}
+
+.shadow-1 {
+  box-shadow: 3px 3px 3px rgb(182, 182, 182);
+}
+
+.border-small {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  border: solid 2px black;
+  border: solid 1px rgb(211, 211, 211);
+}
+
+.text-center {
+  text-align: center;
 }
