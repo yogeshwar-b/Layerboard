@@ -1,3 +1,7 @@
-export const LayersPanel = () => {
-  return <div>LayersPanel</div>
+interface LayersPanelProps {
+  className: string
+}
+
+export const LayersPanel = (props: LayersPanelProps) => {
+  return <div className={props.className}>LayersPanel</div>
 }

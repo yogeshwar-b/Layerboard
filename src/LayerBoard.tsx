@@ -9,13 +9,11 @@ function LayerBoard() {
     <div className='flex-col height-max'>
       <h1>LayerBoard</h1>
       <div className='flex-row flex-grow'>
-        <Toolbox />
-        <div className='flex-grow'>
-          <Board />
-        </div>
-        <LayersPanel />
+        <Toolbox className='rounded-1 m-1 p-1 shadow-1 border-small' />
+        <Board className='flex-grow height-auto rounded-1 m-1 p-1 shadow-1 border-small' />
+        <LayersPanel className='rounded-1 m-1 p-1 shadow-1 border-small' />
       </div>
-      <ColorPalette />
+      <ColorPalette className='rounded-1 m-1 p-1 shadow-1 border-small' />
     </div>
   )
 }
