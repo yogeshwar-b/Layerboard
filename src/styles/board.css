@@ -1,0 +1,10 @@
+:root {
+  --mouse-cursor: default;
+}
+
+.brush-hover {
+  --mouse-cursor: crosshair;
+}
+.board:hover {
+  cursor: var(--mouse-cursor);
+}
