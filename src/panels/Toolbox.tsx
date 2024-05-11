@@ -1,7 +1,10 @@
+import { Dispatch, SetStateAction } from 'react'
+import { Tools } from '../enums/tools'
+
 interface ToolboxProps {
   className: string
-  brushState: string
-  changeBrushState: React.Dispatch<React.SetStateAction<string>>
+  toolState: Tools
+  changeToolState: Dispatch<SetStateAction<Tools>>
 }
 export const Toolbox = (props: ToolboxProps) => {
   return (
@@ -9,7 +12,7 @@ export const Toolbox = (props: ToolboxProps) => {
       <div>Toolbox</div>
       <button
         onClick={() => {
-          props.changeBrushState('brush')
+          props.changeToolState(Tools.Brush)
         }}
       >
         Brush
