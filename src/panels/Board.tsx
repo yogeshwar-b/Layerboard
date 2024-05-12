@@ -10,42 +10,54 @@ interface BoardProps {
 export const Board = (props: BoardProps) => {
   const cursor = props.toolState == Tools.Brush ? ' board brush-hover' : ''
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const isDrawing = useRef<boolean>(false)
+  let prevX = 0
+  let prevY = 0
   return (
     <div className={props.className + cursor}>
       <canvas
-        style={{ aspectRatio: 'auto 300/300' }}
-        width={300}
-        height={300}
+        style={{ aspectRatio: 'auto 300/300', backgroundColor: 'gray' }}
+        width={innerWidth}
+        height={innerHeight}
         ref={canvasRef}
-        onClick={() => {
+        onMouseDown={(e) => {
           if (props.toolState == Tools.Brush) {
+            isDrawing.current = true
+            if (canvasRef.current) {
+              const rect: DOMRect = canvasRef.current?.getBoundingClientRect()
+              prevX = e.clientX - rect.left
+              prevY = e.clientY - rect.top
+            }
+          }
+        }}
+        onMouseMove={(e) => {
+          if (isDrawing.current) {
             const ctx: CanvasRenderingContext2D | null = canvasRef.current
               ? canvasRef.current.getContext('2d')
               : null
-            if (!ctx) return
-            drawHouse(ctx)
+            if (canvasRef.current) {
+              const rect: DOMRect = canvasRef.current?.getBoundingClientRect()
+              const currX = e.clientX - rect.left
+              const currY = e.clientY - rect.top
+              if (!ctx) return
+              ctx.beginPath()
+              ctx.moveTo(prevX, prevY)
+              ctx.lineTo(currX, currY)
+              ctx.strokeStyle = 'black'
+              ctx.lineWidth = 2
+              ctx.stroke()
+              prevX = currX
+              prevY = currY
+            }
           }
+        }}
+        onMouseUp={() => {
+          isDrawing.current = false
+        }}
+        onMouseOut={() => {
+          isDrawing.current = false
         }}
       ></canvas>
     </div>
   )
-}
-
-function drawHouse(ctx: CanvasRenderingContext2D) {
-  // Set line width
-  ctx.lineWidth = 10
-
-  // Wall
-  ctx.strokeRect(75, 140, 150, 110)
-
-  // Door
-  ctx.fillRect(130, 190, 40, 60)
-
-  // Roof
-  ctx.beginPath()
-  ctx.moveTo(50, 140)
-  ctx.lineTo(150, 60)
-  ctx.lineTo(250, 140)
-  ctx.closePath()
-  ctx.stroke()
 }
