@@ -8,3 +8,12 @@
 .board:hover {
   cursor: var(--mouse-cursor);
 }
+
+.canvas-1 {
+  background-color: gray;
+}
+
+.board {
+  display: grid;
+  place-content: center;
+}
