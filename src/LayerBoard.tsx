@@ -20,7 +20,7 @@ function LayerBoard() {
           changeToolState={changeToolState}
         />
         <Board
-          className='flex-grow height-auto rounded-1 m-1 p-1 shadow-1 border-small'
+          className='flex-grow height-auto rounded-1 m-1 p-1 shadow-1 border-small board'
           toolState={ToolState}
         />
         <LayersPanel className='rounded-1 m-1 p-1 shadow-1 border-small' />

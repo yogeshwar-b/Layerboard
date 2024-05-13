@@ -1,7 +1,7 @@
 import '../styles/utils.css'
 import '../styles/board.css'
 import { Tools } from '../enums/tools'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 interface BoardProps {
   className: string
@@ -13,12 +13,17 @@ export const Board = (props: BoardProps) => {
   const isDrawing = useRef<boolean>(false)
   let prevX = 0
   let prevY = 0
+  useEffect(() => {
+    if (canvasRef.current) {
+      const rect = canvasRef.current.parentElement?.getBoundingClientRect()
+      canvasRef.current.height = (rect?.bottom - rect?.top) * 0.98
+      canvasRef.current.width = (rect?.right - rect?.left) * 0.98
+    }
+  })
   return (
-    <div className={props.className + cursor}>
+    <div className={props.className + cursor} id='tsetings'>
       <canvas
-        style={{ aspectRatio: 'auto 300/300', backgroundColor: 'gray' }}
-        width={innerWidth}
-        height={innerHeight}
+        className='canvas-1'
         ref={canvasRef}
         onMouseDown={(e) => {
           if (props.toolState == Tools.Brush) {
