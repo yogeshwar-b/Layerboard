@@ -15,7 +15,7 @@ function LayerBoard() {
       <h1 className='text-center'>LayerBoard</h1>
       <div className='flex-row flex-grow'>
         <Toolbox
-          className='rounded-1 m-1 p-1 shadow-1 border-small'
+          className='rounded-1 m-1 p-1 shadow-1 border-small flex-col flex-center'
           toolState={ToolState}
           changeToolState={changeToolState}
         />

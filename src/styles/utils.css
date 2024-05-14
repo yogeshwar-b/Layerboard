@@ -13,6 +13,9 @@
   display: flex;
   flex-direction: column;
 }
+.flex-center {
+  align-items: center;
+}
 
 .height-max {
   height: 100%;
@@ -55,4 +58,8 @@
 
 .text-center {
   text-align: center;
+}
+
+.disp-no {
+  display: none;
 }
