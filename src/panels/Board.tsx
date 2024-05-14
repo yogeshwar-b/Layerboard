@@ -16,8 +16,10 @@ export const Board = (props: BoardProps) => {
   useEffect(() => {
     if (canvasRef.current) {
       const rect = canvasRef.current.parentElement?.getBoundingClientRect()
-      canvasRef.current.height = (rect?.bottom - rect?.top) * 0.98
-      canvasRef.current.width = (rect?.right - rect?.left) * 0.98
+      if (rect) {
+        canvasRef.current.height = (rect?.bottom - rect?.top) * 0.98
+        canvasRef.current.width = (rect?.right - rect?.left) * 0.98
+      }
     }
   })
   return (
