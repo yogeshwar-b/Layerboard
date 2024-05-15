@@ -5,8 +5,6 @@ import { toolbuttons } from '../constants'
 
 interface ToolboxProps {
   className: string
-  toolState: Tools
-  changeToolState: Dispatch<SetStateAction<Tools>>
   ToolRef: React.MutableRefObject<Tools>
 }
 //@todo - remove button

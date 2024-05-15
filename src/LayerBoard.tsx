@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { Board } from './panels/Board'
 import { ColorPalette } from './panels/ColorPalette'
 import { LayersPanel } from './panels/LayersPanel'
@@ -7,9 +7,6 @@ import './styles/utils.css'
 import { Tools } from './enums/tools'
 
 function LayerBoard() {
-  const [ToolState, changeToolState]: [Tools, Dispatch<SetStateAction<Tools>>] =
-    useState<Tools>(Tools.None)
-
   const ToolRef = useRef<Tools>(Tools.None)
   return (
     <div className='flex-col height-max'>
@@ -17,13 +14,10 @@ function LayerBoard() {
       <div className='flex-row flex-grow'>
         <Toolbox
           className='rounded-1 m-1 p-1 shadow-1 border-small flex-col flex-center'
-          toolState={ToolState}
-          changeToolState={changeToolState}
           ToolRef={ToolRef}
         />
         <Board
           className='flex-grow height-auto rounded-1 m-1 p-1 shadow-1 border-small board'
-          toolState={ToolState}
           ToolRef={ToolRef}
         />
         <LayersPanel className='rounded-1 m-1 p-1 shadow-1 border-small' />

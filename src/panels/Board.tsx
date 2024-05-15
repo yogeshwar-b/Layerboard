@@ -5,11 +5,9 @@ import { useEffect, useRef } from 'react'
 
 interface BoardProps {
   className: string
-  toolState: Tools
   ToolRef: React.MutableRefObject<Tools>
 }
 export const Board = (props: BoardProps) => {
-  const cursor = props.toolState == Tools.Brush ? ' board brush-hover' : ''
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const isDrawing = useRef<boolean>(false)
   let prevX = 0
@@ -24,7 +22,7 @@ export const Board = (props: BoardProps) => {
     }
   })
   return (
-    <div className={props.className + cursor}>
+    <div className={props.className}>
       <canvas
         id='canvas-id'
         className='canvas-1 board'
