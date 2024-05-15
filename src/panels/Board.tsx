@@ -6,6 +6,7 @@ import { useEffect, useRef } from 'react'
 interface BoardProps {
   className: string
   toolState: Tools
+  ToolRef: React.MutableRefObject<Tools>
 }
 export const Board = (props: BoardProps) => {
   const cursor = props.toolState == Tools.Brush ? ' board brush-hover' : ''
@@ -25,10 +26,11 @@ export const Board = (props: BoardProps) => {
   return (
     <div className={props.className + cursor}>
       <canvas
-        className='canvas-1'
+        id='canvas-id'
+        className='canvas-1 board'
         ref={canvasRef}
         onMouseDown={(e) => {
-          if (props.toolState == Tools.Brush) {
+          if (props.ToolRef.current == Tools.Brush) {
             isDrawing.current = true
             if (canvasRef.current) {
               const rect: DOMRect = canvasRef.current?.getBoundingClientRect()

@@ -1,14 +1,14 @@
 import '../styles/utils.css'
 import '../styles/toolbutton.css'
 import { Tools } from '../enums/tools'
-import { Dispatch, SetStateAction } from 'react'
 
 interface ToolButtonProps {
   name: string
   iconpath: string
   id: string
   toolNum: Tools
-  changeToolState: Dispatch<SetStateAction<Tools>>
+  changeToolState: (x: Tools) => void
+  toolState: Tools //Selected Tool
 }
 
 export const ToolButton = (props: ToolButtonProps) => {
@@ -24,6 +24,7 @@ export const ToolButton = (props: ToolButtonProps) => {
           props.changeToolState(props.toolNum)
           console.log(`Selected - ${e.currentTarget.title}`)
         }}
+        checked={props.toolState == props.toolNum}
       />
       <img src={props.iconpath} alt='some icon' className='icon' />
     </label>

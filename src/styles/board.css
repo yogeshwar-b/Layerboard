@@ -5,6 +5,15 @@
 .brush-hover {
   --mouse-cursor: crosshair;
 }
+.move-hover {
+  --mouse-cursor: url('/LayerBoard/icons/move.svg'), all-scroll;
+}
+.eraser-hover {
+  --mouse-cursor: url('/LayerBoard/icons/eraser.svg'), cell;
+}
+.none-hover {
+  --mouse-cursor: url('/LayerBoard/icons/mousearrow.svg'), default;
+}
 .board:hover {
   cursor: var(--mouse-cursor);
 }
