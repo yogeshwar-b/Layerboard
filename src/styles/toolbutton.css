@@ -1,0 +1,6 @@
+input[type='radio']:checked + .icon {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: solid 2px rgb(0, 0, 0);
+}

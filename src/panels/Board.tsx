@@ -23,7 +23,7 @@ export const Board = (props: BoardProps) => {
     }
   })
   return (
-    <div className={props.className + cursor} id='tsetings'>
+    <div className={props.className + cursor}>
       <canvas
         className='canvas-1'
         ref={canvasRef}

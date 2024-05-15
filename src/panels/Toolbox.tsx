@@ -13,16 +13,16 @@ export const Toolbox = (props: ToolboxProps) => {
   return (
     <div className={props.className}>
       <div>Toolbox</div>
-
-      <button
-        onClick={() => {
-          props.changeToolState(Tools.Brush)
-        }}
-      >
-        Brush
-      </button>
       {toolbuttons.map((t) => {
-        return <ToolButton name={t.name} iconpath={t.iconPath}></ToolButton>
+        return (
+          <ToolButton
+            name='toolbar'
+            id={t.name}
+            iconpath={t.iconPath}
+            toolNum={t.toolNum}
+            changeToolState={props.changeToolState}
+          ></ToolButton>
+        )
       })}
     </div>
   )
