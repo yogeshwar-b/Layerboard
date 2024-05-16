@@ -61,6 +61,7 @@ export const Toolbox = (props: ToolboxProps) => {
             toolNum={t.toolNum}
             changeToolState={changeToolState1}
             toolState={ToolState}
+            key={t.name}
           ></ToolButton>
         )
       })}

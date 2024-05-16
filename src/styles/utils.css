@@ -4,6 +4,18 @@
   --palette-height: 4rem;
 }
 
+.pos-rel {
+  position: relative;
+}
+
+.pos-abs {
+  position: absolute;
+}
+
+.pos-bottom {
+  bottom: 0;
+}
+
 .flex-row {
   display: flex;
   flex-direction: row;
