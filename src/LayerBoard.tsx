@@ -18,7 +18,7 @@ function LayerBoard() {
         />
         <Board
           className='flex-grow height-auto rounded-1 m-1 p-1 shadow-1 border-small board'
-          ToolRef={ToolRef}
+          toolRef={ToolRef}
         />
         <LayersPanel className='rounded-1 m-1 p-1 shadow-1 border-small pos-rel' />
       </div>
