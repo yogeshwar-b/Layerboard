@@ -10,7 +10,7 @@ interface LayersPanelProps {
 
 export const LayersPanel = ({ className, BoardRef }: LayersPanelProps) => {
   const [layerButtons, dispatch]: [number[], React.Dispatch<action>] =
-    useReducer(layerButtonsReducer, [1, 2])
+    useReducer(layerButtonsReducer, [1])
   const layerPanelRef = useRef<HTMLDivElement>(null)
   const activeLayer = useRef<number>(2)
   function handleChange(i: string) {
@@ -44,16 +44,19 @@ export const LayersPanel = ({ className, BoardRef }: LayersPanelProps) => {
       <div className='pos-abs pos-bottom'>
         <button
           onClick={() => {
-            if (BoardRef?.current) {
-              BoardRef.current.addLayer('New Layer')
-            }
             dispatch({ type: 'Add', activeLayer: activeLayer.current })
+            if (BoardRef?.current) {
+              BoardRef.current.addLayer(String(Math.max(...layerButtons) + 1))
+            }
           }}
         >
           Add Layer +
         </button>
         <button
           onClick={() => {
+            if (BoardRef?.current) {
+              BoardRef.current.deleteLayer(String(activeLayer.current))
+            }
             dispatch({ type: 'Delete', activeLayer: activeLayer.current })
           }}
         >

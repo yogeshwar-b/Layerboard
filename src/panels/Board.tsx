@@ -16,16 +16,22 @@ interface BoardProps {
 }
 export interface LayersHandle {
   addLayer: (layerName: string) => void
+  deleteLayer: (layerName: string) => void
 }
 
-export const Board = forwardRef<LayersHandle, BoardProps>(
-  ({ className, toolRef }, ref) => {
+export const Board = React.memo(
+  forwardRef<LayersHandle, BoardProps>(({ className, toolRef }, ref) => {
     const isDrawing = useRef<boolean>(false)
     const [layersList, dispatch]: [string[], React.Dispatch<action>] =
       useReducer(layersListReducer, ['1'])
     useImperativeHandle(ref, () => ({
       addLayer(layerName) {
+        console.log('adding ' + layerName)
         dispatch({ type: 'add', layerName })
+      },
+      deleteLayer(layerName) {
+        console.log('delete layer called')
+        dispatch({ type: 'delete', layerName })
       },
     }))
     // useEffect(() => {
@@ -46,7 +52,7 @@ export const Board = forwardRef<LayersHandle, BoardProps>(
         })}
       </div>
     )
-  }
+  })
 )
 
 interface action {
@@ -57,6 +63,16 @@ function layersListReducer(layersList: string[], action: action) {
   switch (action.type) {
     case 'add':
       return [...layersList, action.layerName]
+    case 'delete':
+      console.log(
+        `delete layer reducer called deleting ${action.layerName} from ${layersList}`
+      )
+
+      return layersList.filter((x) => {
+        if (x != action.layerName) {
+          return x
+        }
+      })
     default:
       return layersList
   }
@@ -74,6 +90,7 @@ const BoardLayer = React.memo(
     let prevY = 0
 
     useEffect(() => {
+      console.log('reloading ' + layerName)
       if (canvasRef.current) {
         const rect = canvasRef.current.parentElement?.getBoundingClientRect()
         if (rect) {
@@ -114,6 +131,8 @@ const BoardLayer = React.memo(
               ctx.strokeStyle = 'black'
               ctx.lineWidth = 2
               ctx.stroke()
+              ctx.closePath()
+              ctx.save()
               prevX = currX
               prevY = currY
             }
