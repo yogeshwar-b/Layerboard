@@ -1,14 +1,16 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { RefObject, useEffect, useReducer, useRef } from 'react'
 import { LayerButton } from '../components/LayerButton'
+import { LayersHandle } from './Board'
 import '../styles/utils.css'
 
 interface LayersPanelProps {
   className: string
+  BoardRef: RefObject<LayersHandle>
 }
 
-export const LayersPanel = (props: LayersPanelProps) => {
+export const LayersPanel = ({ className, BoardRef }: LayersPanelProps) => {
   const [layerButtons, dispatch]: [number[], React.Dispatch<action>] =
-    useReducer(layerButtonsReducer, [1, 2])
+    useReducer(layerButtonsReducer, [1])
   const layerPanelRef = useRef<HTMLDivElement>(null)
   const activeLayer = useRef<number>(2)
   function handleChange(i: string) {
@@ -28,7 +30,7 @@ export const LayersPanel = (props: LayersPanelProps) => {
   })
 
   return (
-    <div className={props.className} ref={layerPanelRef}>
+    <div className={className} ref={layerPanelRef}>
       <div>LayersPanel</div>
       {layerButtons.map((i) => {
         return (
@@ -43,12 +45,18 @@ export const LayersPanel = (props: LayersPanelProps) => {
         <button
           onClick={() => {
             dispatch({ type: 'Add', activeLayer: activeLayer.current })
+            if (BoardRef?.current) {
+              BoardRef.current.addLayer(String(Math.max(...layerButtons) + 1))
+            }
           }}
         >
           Add Layer +
         </button>
         <button
           onClick={() => {
+            if (BoardRef?.current) {
+              BoardRef.current.deleteLayer(String(activeLayer.current))
+            }
             dispatch({ type: 'Delete', activeLayer: activeLayer.current })
           }}
         >
