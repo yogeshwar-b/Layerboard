@@ -1,12 +1,14 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { RefObject, useEffect, useReducer, useRef } from 'react'
 import { LayerButton } from '../components/LayerButton'
+import { LayersHandle } from './Board'
 import '../styles/utils.css'
 
 interface LayersPanelProps {
   className: string
+  BoardRef: RefObject<LayersHandle>
 }
 
-export const LayersPanel = (props: LayersPanelProps) => {
+export const LayersPanel = ({ className, BoardRef }: LayersPanelProps) => {
   const [layerButtons, dispatch]: [number[], React.Dispatch<action>] =
     useReducer(layerButtonsReducer, [1, 2])
   const layerPanelRef = useRef<HTMLDivElement>(null)
@@ -28,7 +30,7 @@ export const LayersPanel = (props: LayersPanelProps) => {
   })
 
   return (
-    <div className={props.className} ref={layerPanelRef}>
+    <div className={className} ref={layerPanelRef}>
       <div>LayersPanel</div>
       {layerButtons.map((i) => {
         return (
@@ -42,6 +44,9 @@ export const LayersPanel = (props: LayersPanelProps) => {
       <div className='pos-abs pos-bottom'>
         <button
           onClick={() => {
+            if (BoardRef?.current) {
+              BoardRef.current.addLayer('New Layer')
+            }
             dispatch({ type: 'Add', activeLayer: activeLayer.current })
           }}
         >
