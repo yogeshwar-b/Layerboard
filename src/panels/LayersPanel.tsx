@@ -21,7 +21,7 @@ export const LayersPanel = ({
     useReducer(layerButtonsReducer, [1])
   const layerPanelRef = useRef<HTMLDivElement>(null)
   function handleChange(i: string) {
-    // console.log('something changed in ' + i)
+    // console.log('Active Layer is- ' + i)
     ActiveLayer.current = Number(i)
   }
 
@@ -43,6 +43,7 @@ export const LayersPanel = ({
             key={String(i)}
             name={String(i)}
             onChecked={handleChange}
+            ActiveLayer={ActiveLayer}
           />
         )
       })}
