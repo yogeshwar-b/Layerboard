@@ -3,7 +3,7 @@ import {
   forwardRef,
   useImperativeHandle,
   useReducer,
-  useRef
+  useRef,
 } from 'react'
 import { Tools } from '../enums/tools'
 import '../styles/utils.css'
@@ -18,9 +18,10 @@ export interface CanvasHandle {
 }
 interface CanvasContainerProps {
   ToolRef: React.MutableRefObject<Tools>
+  ActiveLayer: React.MutableRefObject<number>
 }
 export const CanvasContainer = forwardRef(
-  ({ ToolRef }: CanvasContainerProps, ref) => {
+  ({ ToolRef, ActiveLayer }: CanvasContainerProps, ref) => {
     const [CanvasList, dispatch] = useReducer(CanvasReducer, ['1'])
     useImperativeHandle(ref, () => ({
       test() {
@@ -41,7 +42,7 @@ export const CanvasContainer = forwardRef(
         } else {
           dispatch({ type: 'add', canvasName: name })
         }
-      }
+      },
     }))
     function handleDelete(canvasId: string) {
       dispatch({ type: 'delete', canvasName: canvasId })
@@ -55,6 +56,7 @@ export const CanvasContainer = forwardRef(
               handleDelete={handleDelete}
               key={c}
               toolRef={ToolRef}
+              ActiveLayer={ActiveLayer}
             />
           )
         })}
@@ -67,12 +69,18 @@ interface CanvasBoxProps {
   canvasId: string
   handleDelete: (canvasId: string) => void
   toolRef: React.MutableRefObject<Tools>
+  ActiveLayer: React.MutableRefObject<number>
 }
-const CanvasBox = ({ canvasId, handleDelete, toolRef }: CanvasBoxProps) => {
+const CanvasBox = ({
+  canvasId,
+  handleDelete,
+  toolRef,
+  ActiveLayer,
+}: CanvasBoxProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const posRef = useRef<posRef>({
     prevX: 0,
-    prevY: 0
+    prevY: 0,
   })
   const isDrawing = useRef<boolean>(false)
 
@@ -84,11 +92,17 @@ const CanvasBox = ({ canvasId, handleDelete, toolRef }: CanvasBoxProps) => {
         ref={canvasRef}
         style={{ border: 'solid 2px white' }}
         onMouseDown={(e) => {
-          if (toolRef.current == Tools.Brush)
+          if (
+            toolRef.current == Tools.Brush &&
+            String(ActiveLayer.current) == canvasId
+          )
             MouseDownHandle(e, isDrawing, canvasRef, posRef)
         }}
         onMouseMove={(e) => {
-          if (toolRef.current == Tools.Brush)
+          if (
+            toolRef.current == Tools.Brush &&
+            String(ActiveLayer.current) == canvasId
+          )
             MouseMoveHandle(e, isDrawing, canvasRef, posRef)
         }}
         onMouseUp={() => {

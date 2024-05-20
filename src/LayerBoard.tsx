@@ -11,6 +11,7 @@ function LayerBoard() {
   const ToolRef = useRef<Tools>(Tools.None)
   const BoardRef = useRef<LayersHandle>(null)
   const CanvasContainerRef = useRef<CanvasHandle>(null)
+  const ActiveLayer = useRef<number>(1)
 
   return (
     <div className='flex-col height-max'>
@@ -25,11 +26,16 @@ function LayerBoard() {
           toolRef={ToolRef}
           ref={BoardRef}
         /> */}
-        <CanvasContainer ref={CanvasContainerRef} ToolRef={ToolRef} />
+        <CanvasContainer
+          ref={CanvasContainerRef}
+          ToolRef={ToolRef}
+          ActiveLayer={ActiveLayer}
+        />
         <LayersPanel
           className='rounded-1 m-1 p-1 shadow-1 border-small pos-rel'
           BoardRef={BoardRef}
           CanvasContainerRef={CanvasContainerRef}
+          ActiveLayer={ActiveLayer}
         />
       </div>
       <ColorPalette className='palette rounded-1 m-1 p-1 shadow-1 border-small' />
