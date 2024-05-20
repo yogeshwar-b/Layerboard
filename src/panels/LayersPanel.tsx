@@ -2,13 +2,19 @@ import { RefObject, useEffect, useReducer, useRef } from 'react'
 import { LayerButton } from '../components/LayerButton'
 import { LayersHandle } from './Board'
 import '../styles/utils.css'
+import { CanvasHandle } from './CanvasContainer'
 
 interface LayersPanelProps {
   className: string
   BoardRef: RefObject<LayersHandle>
+  CanvasContainerRef: React.RefObject<CanvasHandle>
 }
 
-export const LayersPanel = ({ className, BoardRef }: LayersPanelProps) => {
+export const LayersPanel = ({
+  className,
+  BoardRef,
+  CanvasContainerRef
+}: LayersPanelProps) => {
   const [layerButtons, dispatch]: [number[], React.Dispatch<action>] =
     useReducer(layerButtonsReducer, [1])
   const layerPanelRef = useRef<HTMLDivElement>(null)
@@ -45,19 +51,26 @@ export const LayersPanel = ({ className, BoardRef }: LayersPanelProps) => {
         <button
           onClick={() => {
             dispatch({ type: 'Add', activeLayer: activeLayer.current })
-            if (BoardRef?.current) {
-              BoardRef.current.addLayer(String(Math.max(...layerButtons) + 1))
-            }
+            // if (BoardRef?.current) {
+            //   BoardRef.current.addLayer(String(Math.max(...layerButtons) + 1))
+            // }
+            if (CanvasContainerRef?.current)
+              CanvasContainerRef.current.CanvasAdd(
+                String(Math.max(...layerButtons) + 1)
+              )
           }}
         >
           Add Layer +
         </button>
         <button
           onClick={() => {
-            if (BoardRef?.current) {
-              BoardRef.current.deleteLayer(String(activeLayer.current))
-            }
+            // if (BoardRef?.current) {
+            //   BoardRef.current.deleteLayer(String(activeLayer.current))
+            // }
+
             dispatch({ type: 'Delete', activeLayer: activeLayer.current })
+            if (CanvasContainerRef?.current)
+              CanvasContainerRef.current.CanvasDel(String(activeLayer.current))
           }}
         >
           Delete Layer -
