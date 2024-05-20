@@ -28,7 +28,9 @@
 .flex-center {
   align-items: center;
 }
-
+.flex-wrap {
+  flex-wrap: wrap;
+}
 .height-max {
   height: 100%;
 }

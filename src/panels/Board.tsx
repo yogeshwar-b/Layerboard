@@ -6,7 +6,7 @@ import {
   useEffect,
   useImperativeHandle,
   useReducer,
-  useRef,
+  useRef
 } from 'react'
 import React from 'react'
 
@@ -32,7 +32,7 @@ export const Board = React.memo(
       deleteLayer(layerName) {
         console.log('delete layer called')
         dispatch({ type: 'delete', layerName })
-      },
+      }
     }))
     // useEffect(() => {
     //   if (canvasRef.current) {
@@ -86,8 +86,10 @@ interface BoardLayerProps {
 const BoardLayer = React.memo(
   ({ isDrawing, toolRef, layerName }: BoardLayerProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    let prevX = 0
-    let prevY = 0
+    const posRef = useRef<{ prevX: number; prevY: number }>({
+      prevX: 0,
+      prevY: 0
+    })
 
     useEffect(() => {
       console.log('reloading ' + layerName)
@@ -110,8 +112,8 @@ const BoardLayer = React.memo(
             isDrawing.current = true
             if (canvasRef.current) {
               const rect: DOMRect = canvasRef.current?.getBoundingClientRect()
-              prevX = e.clientX - rect.left
-              prevY = e.clientY - rect.top
+              posRef.current.prevX = e.clientX - rect.left
+              posRef.current.prevY = e.clientY - rect.top
             }
           }
         }}
@@ -126,15 +128,15 @@ const BoardLayer = React.memo(
               const currY = e.clientY - rect.top
               if (!ctx) return
               ctx.beginPath()
-              ctx.moveTo(prevX, prevY)
+              ctx.moveTo(posRef.current.prevX, posRef.current.prevY)
               ctx.lineTo(currX, currY)
               ctx.strokeStyle = 'black'
               ctx.lineWidth = 2
               ctx.stroke()
               ctx.closePath()
               ctx.save()
-              prevX = currX
-              prevY = currY
+              posRef.current.prevX = currX
+              posRef.current.prevY = currY
             }
           }
         }}
