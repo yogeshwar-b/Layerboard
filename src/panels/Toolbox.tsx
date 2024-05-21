@@ -11,7 +11,7 @@ interface ToolboxProps {
 //@todo - remove button
 export const Toolbox = (props: ToolboxProps) => {
   const [ToolState, changeToolState]: [Tools, Dispatch<SetStateAction<Tools>>] =
-    useState<Tools>(Tools.None)
+    useState<Tools>(props.ToolRef.current)
 
   function changeToolState1(x: Tools) {
     const canvaselement = document.getElementById('canvas-id')

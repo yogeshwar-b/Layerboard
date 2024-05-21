@@ -8,7 +8,7 @@ import { Tools } from './enums/tools'
 import { CanvasContainer, CanvasHandle } from './panels/CanvasContainer'
 
 function LayerBoard() {
-  const ToolRef = useRef<Tools>(Tools.None)
+  const ToolRef = useRef<Tools>(Tools.Brush)
   const BoardRef = useRef<LayersHandle>(null)
   const CanvasContainerRef = useRef<CanvasHandle>(null)
   const ActiveLayer = useRef<number>(1)
