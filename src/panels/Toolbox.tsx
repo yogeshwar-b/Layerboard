@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { Tools } from '../enums/tools'
 import { ToolButton } from '../components/ToolButton'
 import { toolbuttons } from '../constants'
+import '../styles/toolbox.css'
 
 interface ToolboxProps {
   className: string
@@ -50,7 +51,7 @@ export const Toolbox = (props: ToolboxProps) => {
     changeToolState(x)
   }
   return (
-    <div className={props.className}>
+    <div className={props.className + ' tool-box'}>
       <div>Toolbox</div>
       {toolbuttons.map((t) => {
         return (

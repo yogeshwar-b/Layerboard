@@ -14,31 +14,28 @@ function LayerBoard() {
   const ActiveLayer = useRef<number>(1)
 
   return (
-    <div className='flex-col height-max'>
-      <h1 className='text-center'>LayerBoard</h1>
-      <div className='flex-row flex-grow'>
-        <Toolbox
-          className='rounded-1 m-1 p-1 shadow-1 border-small flex-col flex-center'
-          ToolRef={ToolRef}
-        />
-        {/* <Board
+    <div className='height-max'>
+      <Toolbox
+        className='rounded-1 m-1 p-1 shadow-1 border-small flex-col flex-center'
+        ToolRef={ToolRef}
+      />
+      {/* <Board
           className='flex-grow height-auto rounded-1 m-1 p-1 shadow-1 border-small board'
           toolRef={ToolRef}
           ref={BoardRef}
         /> */}
-        <CanvasContainer
-          ref={CanvasContainerRef}
-          ToolRef={ToolRef}
-          ActiveLayer={ActiveLayer}
-        />
-        <LayersPanel
-          className='rounded-1 m-1 p-1 shadow-1 border-small pos-rel'
-          BoardRef={BoardRef}
-          CanvasContainerRef={CanvasContainerRef}
-          ActiveLayer={ActiveLayer}
-        />
-      </div>
-      <ColorPalette className='palette rounded-1 m-1 p-1 shadow-1 border-small' />
+      <CanvasContainer
+        ref={CanvasContainerRef}
+        ToolRef={ToolRef}
+        ActiveLayer={ActiveLayer}
+      />
+      <LayersPanel
+        className='rounded-1 m-1 p-1 shadow-1 border-small pos-abs pos-right pos-top'
+        BoardRef={BoardRef}
+        CanvasContainerRef={CanvasContainerRef}
+        ActiveLayer={ActiveLayer}
+      />
+      <ColorPalette className='palette rounded-1 m-1 p-1 shadow-1 border-small pos-bottom pos-abs width-max' />
     </div>
   )
 }

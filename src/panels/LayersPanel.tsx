@@ -3,6 +3,7 @@ import { LayerButton } from '../components/LayerButton'
 import { LayersHandle } from './Board'
 import '../styles/utils.css'
 import { CanvasHandle } from './CanvasContainer'
+import '../styles/layerpanel.css'
 
 interface LayersPanelProps {
   className: string
@@ -15,42 +16,38 @@ export const LayersPanel = ({
   className,
   BoardRef,
   ActiveLayer,
-  CanvasContainerRef,
+  CanvasContainerRef
 }: LayersPanelProps) => {
   const [layerButtons, dispatch]: [number[], React.Dispatch<action>] =
     useReducer(layerButtonsReducer, [1])
   const layerPanelRef = useRef<HTMLDivElement>(null)
   function handleChange(i: string) {
-    // console.log('Active Layer is- ' + i)
+    document
+      .getElementById(String(ActiveLayer.current))
+      ?.classList.remove('topmost-layer')
     ActiveLayer.current = Number(i)
+    console.log('Active Layer is- ' + i)
+
+    document
+      .getElementById(String(ActiveLayer.current))
+      ?.classList.add('topmost-layer')
   }
 
-  useEffect(() => {
-    const radio = layerPanelRef.current?.getElementsByTagName('input')
-    if (radio)
-      for (let i = 0; i < radio.length; i++) {
-        if (radio[i] && radio[i].id == String(ActiveLayer.current))
-          radio[i].checked = true
-      }
-  })
+  // useEffect(() => {
+  //   const radio = layerPanelRef.current?.getElementsByTagName('input')
+  //   if (radio)
+  //     for (let i = 0; i < radio.length; i++) {
+  //       if (radio[i] && radio[i].id == String(ActiveLayer.current))
+  //         radio[i].checked = true
+  //     }
+  // })
 
   return (
-    <div className={className} ref={layerPanelRef}>
+    <div className={className + ' layer-panel'} ref={layerPanelRef}>
       <div>LayersPanel</div>
-      {layerButtons.map((i) => {
-        return (
-          <LayerButton
-            key={String(i)}
-            name={String(i)}
-            onChecked={handleChange}
-            ActiveLayer={ActiveLayer}
-          />
-        )
-      })}
-      <div className='pos-abs pos-bottom'>
+      <div className=''>
         <button
           onClick={() => {
-            dispatch({ type: 'Add', activeLayer: ActiveLayer.current })
             // if (BoardRef?.current) {
             //   BoardRef.current.addLayer(String(Math.max(...layerButtons) + 1))
             // }
@@ -58,6 +55,9 @@ export const LayersPanel = ({
               CanvasContainerRef.current.CanvasAdd(
                 String(Math.max(...layerButtons) + 1)
               )
+            // handleChange(String(Math.max(...layerButtons) + 1))
+            // ActiveLayer.current = Math.max(...layerButtons) + 1
+            dispatch({ type: 'Add', activeLayer: ActiveLayer.current })
           }}
         >
           Add Layer +
@@ -76,6 +76,16 @@ export const LayersPanel = ({
           Delete Layer -
         </button>
       </div>
+      {layerButtons.map((i) => {
+        return (
+          <LayerButton
+            key={String(i)}
+            name={String(i)}
+            onChecked={handleChange}
+            ActiveLayer={ActiveLayer}
+          />
+        )
+      })}
     </div>
   )
 }

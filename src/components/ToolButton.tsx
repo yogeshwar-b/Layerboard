@@ -1,5 +1,5 @@
 import '../styles/utils.css'
-import '../styles/toolbutton.css'
+import '../styles/toolbox.css'
 import { Tools } from '../enums/tools'
 
 interface ToolButtonProps {

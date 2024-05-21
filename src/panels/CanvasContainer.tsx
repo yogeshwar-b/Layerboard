@@ -1,12 +1,14 @@
 import {
   MouseEvent,
   forwardRef,
+  useEffect,
   useImperativeHandle,
   useReducer,
-  useRef,
+  useRef
 } from 'react'
 import { Tools } from '../enums/tools'
 import '../styles/utils.css'
+import '../styles/canvasbox.css'
 
 type posRef = {
   prevX: number
@@ -42,16 +44,17 @@ export const CanvasContainer = forwardRef(
         } else {
           dispatch({ type: 'add', canvasName: name })
         }
-      },
+      }
     }))
     function handleDelete(canvasId: string) {
       dispatch({ type: 'delete', canvasName: canvasId })
     }
     return (
-      <div className='flex-row flex-wrap'>
+      <div className='top-left pos-abs height-max width-max'>
         {CanvasList.map((c: string) => {
           return (
             <CanvasBox
+              className='top-left pos-abs'
               canvasId={c}
               handleDelete={handleDelete}
               key={c}
@@ -70,27 +73,45 @@ interface CanvasBoxProps {
   handleDelete: (canvasId: string) => void
   toolRef: React.MutableRefObject<Tools>
   ActiveLayer: React.MutableRefObject<number>
+  className: string
 }
 const CanvasBox = ({
   canvasId,
   handleDelete,
   toolRef,
   ActiveLayer,
+  className
 }: CanvasBoxProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const posRef = useRef<posRef>({
     prevX: 0,
-    prevY: 0,
+    prevY: 0
   })
   const isDrawing = useRef<boolean>(false)
 
+  // useEffect(() => {
+  //   console.log('reloading ' + canvasId)
+  //   if (canvasRef.current) {
+  //     const rect = canvasRef.current.parentElement?.getBoundingClientRect()
+  //     if (rect) {
+  //       canvasRef.current.height = (rect?.bottom - rect?.top) * 0.98
+  //       canvasRef.current.width = (rect?.right - rect?.left) * 0.98
+  //       // canvasRef.current.height = 400
+  //       // canvasRef.current.width = 400
+  //     }
+  //   }
+  // })
+
   return (
-    <div>
-      <h3>Canvas {canvasId}</h3>
+    <div className={'height-max width-max ' + className}>
+      <h3 className='grid-center'>Canvas {canvasId}</h3>
       <canvas
         id={canvasId}
         ref={canvasRef}
         style={{ border: 'solid 2px white' }}
+        className={className}
+        height={innerHeight}
+        width={innerWidth}
         onMouseDown={(e) => {
           if (
             toolRef.current == Tools.Brush &&
@@ -174,7 +195,7 @@ function MouseMoveHandle(
       ctx.moveTo(posRef.current.prevX, posRef.current.prevY)
       ctx.lineTo(currX, currY)
       ctx.strokeStyle = 'white'
-      ctx.lineWidth = 2
+      ctx.lineWidth = 5
       ctx.stroke()
       posRef.current.prevX = currX
       posRef.current.prevY = currY

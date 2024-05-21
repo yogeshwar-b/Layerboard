@@ -15,7 +15,12 @@
 .pos-bottom {
   bottom: 0;
 }
-
+.pos-right {
+  right: 0;
+}
+.pos-top {
+  top: 0;
+}
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -33,6 +38,14 @@
 }
 .height-max {
   height: 100%;
+}
+.width-max {
+  width: 100%;
+}
+
+.grid-center {
+  display: grid;
+  place-content: center;
 }
 
 .height-auto {
@@ -76,4 +89,8 @@
 
 .disp-no {
   display: none;
+}
+
+.topmost-layer {
+  z-index: 99;
 }
