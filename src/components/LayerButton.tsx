@@ -10,7 +10,7 @@ export const LayerButton = (props: LayerButtonProps) => {
   return (
     <div className='border-small flex-row'>
       <input
-        onChange={() => {
+        onClick={() => {
           console.log('onchange layerbutton called')
           props.onChecked(props.name)
         }}

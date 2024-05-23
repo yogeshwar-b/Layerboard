@@ -16,7 +16,7 @@ export const LayersPanel = ({
   className,
   BoardRef,
   ActiveLayer,
-  CanvasContainerRef
+  CanvasContainerRef,
 }: LayersPanelProps) => {
   const [layerButtons, dispatch]: [number[], React.Dispatch<action>] =
     useReducer(layerButtonsReducer, [1])
@@ -53,11 +53,17 @@ export const LayersPanel = ({
             // }
             if (CanvasContainerRef?.current)
               CanvasContainerRef.current.CanvasAdd(
-                String(Math.max(...layerButtons) + 1)
+                String(
+                  layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : '1'
+                )
               )
-            // handleChange(String(Math.max(...layerButtons) + 1))
+            handleChange(
+              String(
+                layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : '1'
+              )
+            )
             // ActiveLayer.current = Math.max(...layerButtons) + 1
-            dispatch({ type: 'Add', activeLayer: ActiveLayer.current })
+            dispatch({ type: 'Add', activeLayer: ActiveLayer })
           }}
         >
           Add Layer +
@@ -67,8 +73,15 @@ export const LayersPanel = ({
             // if (BoardRef?.current) {
             //   BoardRef.current.deleteLayer(String(activeLayer.current))
             // }
-
-            dispatch({ type: 'Delete', activeLayer: ActiveLayer.current })
+            // var newLayer = ActiveLayer.current
+            // if (layerButtons.indexOf(ActiveLayer.current) - 1 >= 0) {
+            //   newLayer =
+            //     layerButtons[layerButtons.indexOf(ActiveLayer.current) - 1]
+            // } else {
+            //   newLayer = -1
+            // }
+            dispatch({ type: 'Delete', activeLayer: ActiveLayer })
+            // handleChange(String(newLayer))
             if (CanvasContainerRef?.current)
               CanvasContainerRef.current.CanvasDel(String(ActiveLayer.current))
           }}
@@ -92,16 +105,20 @@ export const LayersPanel = ({
 
 interface action {
   type: string
-  activeLayer: number
+  activeLayer: React.MutableRefObject<number>
 }
 
 function layerButtonsReducer(layerButtons: number[], action: action) {
   switch (action.type) {
     case 'Add':
-      return [...layerButtons, Math.max(...layerButtons) + 1]
+      return [
+        ...layerButtons,
+        layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : 1,
+      ]
     case 'Delete':
+      console.log('deleting ' + action.activeLayer.current + ' in layer panel')
       return layerButtons.filter((x) => {
-        if (x != action.activeLayer) return x
+        if (x != action.activeLayer.current) return x
       })
     default:
       return layerButtons
