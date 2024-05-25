@@ -1,5 +1,4 @@
 import { useRef } from 'react'
-import { Board, LayersHandle } from './panels/Board'
 import { ColorPalette } from './panels/ColorPalette'
 import { LayersPanel } from './panels/LayersPanel'
 import { Toolbox } from './panels/Toolbox'
@@ -9,7 +8,6 @@ import { CanvasContainer, CanvasHandle } from './panels/CanvasContainer'
 
 function LayerBoard() {
   const ToolRef = useRef<Tools>(Tools.Brush)
-  const BoardRef = useRef<LayersHandle>(null)
   const CanvasContainerRef = useRef<CanvasHandle>(null)
   const ActiveLayer = useRef<number>(1)
 
@@ -31,7 +29,6 @@ function LayerBoard() {
       />
       <LayersPanel
         className='rounded-1 m-1 p-1 shadow-1 border-small pos-abs pos-right pos-top'
-        BoardRef={BoardRef}
         CanvasContainerRef={CanvasContainerRef}
         ActiveLayer={ActiveLayer}
       />
