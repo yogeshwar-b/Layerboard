@@ -1,10 +1,9 @@
 import {
   MouseEvent,
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useReducer,
-  useRef
+  useRef,
 } from 'react'
 import { Tools } from '../enums/tools'
 import '../styles/utils.css'
@@ -44,11 +43,8 @@ export const CanvasContainer = forwardRef(
         } else {
           dispatch({ type: 'add', canvasName: name })
         }
-      }
+      },
     }))
-    function handleDelete(canvasId: string) {
-      dispatch({ type: 'delete', canvasName: canvasId })
-    }
     return (
       <div className='top-left pos-abs height-max width-max'>
         {CanvasList.map((c: string) => {
@@ -56,7 +52,6 @@ export const CanvasContainer = forwardRef(
             <CanvasBox
               className='top-left pos-abs'
               canvasId={c}
-              handleDelete={handleDelete}
               key={c}
               toolRef={ToolRef}
               ActiveLayer={ActiveLayer}
@@ -70,22 +65,20 @@ export const CanvasContainer = forwardRef(
 
 interface CanvasBoxProps {
   canvasId: string
-  handleDelete: (canvasId: string) => void
   toolRef: React.MutableRefObject<Tools>
   ActiveLayer: React.MutableRefObject<number>
   className: string
 }
 const CanvasBox = ({
   canvasId,
-  handleDelete,
   toolRef,
   ActiveLayer,
-  className
+  className,
 }: CanvasBoxProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const posRef = useRef<posRef>({
     prevX: 0,
-    prevY: 0
+    prevY: 0,
   })
   const isDrawing = useRef<boolean>(false)
 
@@ -133,13 +126,6 @@ const CanvasBox = ({
           isDrawing.current = false
         }}
       ></canvas>
-      {/* <button
-        onClick={() => {
-          handleDelete(canvasId)
-        }}
-      >
-        Delete Canvas
-      </button> */}
     </div>
   )
 }

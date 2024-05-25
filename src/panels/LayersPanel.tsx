@@ -1,20 +1,17 @@
-import { RefObject, useEffect, useReducer, useRef } from 'react'
+import { useReducer, useRef } from 'react'
 import { LayerButton } from '../components/LayerButton'
-import { LayersHandle } from './Board'
 import '../styles/utils.css'
 import { CanvasHandle } from './CanvasContainer'
 import '../styles/layerpanel.css'
 
 interface LayersPanelProps {
   className: string
-  BoardRef: RefObject<LayersHandle>
   CanvasContainerRef: React.RefObject<CanvasHandle>
   ActiveLayer: React.MutableRefObject<number>
 }
 
 export const LayersPanel = ({
   className,
-  BoardRef,
   ActiveLayer,
   CanvasContainerRef,
 }: LayersPanelProps) => {
