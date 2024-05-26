@@ -1,4 +1,8 @@
 import { Tools } from './enums/tools'
+import brushIcon from '/icons/brush.svg'
+import eraserIcon from '/icons/eraser.svg'
+import mousearrowIcon from '/icons/mousearrow.svg'
+import moveIcon from '/icons/move.svg'
 
 interface ToolButton {
   iconPath: string
@@ -9,18 +13,18 @@ interface ToolButton {
 export const toolbuttons: ToolButton[] = [
   {
     name: 'mouse',
-    iconPath: '/LayerBoard/icons/mousearrow.svg',
+    iconPath: mousearrowIcon,
     toolNum: Tools.None
   },
   {
     name: 'brush',
-    iconPath: '/LayerBoard/icons/brush.svg',
+    iconPath: brushIcon,
     toolNum: Tools.Brush
   },
   {
     name: 'eraser',
-    iconPath: '/LayerBoard/icons/eraser.svg',
+    iconPath:eraserIcon,
     toolNum: Tools.Eraser
   },
-  { name: 'move', iconPath: '/LayerBoard/icons/move.svg', toolNum: Tools.Move }
+  { name: 'move', iconPath: moveIcon, toolNum: Tools.Move }
 ]
