@@ -8,6 +8,7 @@ import {
 import { Tools } from '../enums/tools'
 import '../styles/utils.css'
 import '../styles/canvasbox.css'
+import { CanvasLayer } from './CanvasLayer'
 
 type posRef = {
   prevX: number
@@ -49,7 +50,7 @@ export const CanvasContainer = forwardRef(
       <div className='top-left pos-abs height-max width-max'>
         {CanvasList.map((c: string) => {
           return (
-            <CanvasBox
+            <CanvasLayer
               className='top-left pos-abs'
               canvasId={c}
               key={c}
