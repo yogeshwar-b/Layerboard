@@ -15,9 +15,10 @@ export const CanvasLayer = ({
   ActiveLayer,
   className,
 }: CanvasLayerProps) => {
+  let CanvasLayerId = 'DrawingBoard' + canvasId
   return (
     <div
-      id='DrawingBoard'
+      id={CanvasLayerId}
       className='drawing-board'
       onMouseDown={MouseDownHandle}
       onMouseMove={MouseMoveHandle}
@@ -28,26 +29,35 @@ export const CanvasLayer = ({
       {<PolyLineSVG />}
     </div>
   )
-  function MouseDownHandle(e) {
+  function MouseDownHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     isDrawing = true
     path2 = []
-    var rect = document.getElementById('DrawingBoard').getBoundingClientRect()
+    var rect = document.getElementById(CanvasLayerId)?.getBoundingClientRect()
 
-    var points1 = document.getElementById('mypolyline').getAttribute('points')
-    points1 = ` ${e.clientX - rect.left},${e.clientY - rect.top}`
-    document.getElementById('mypolyline').setAttribute('points', points1)
-    console.log(points1)
+    var points1 = document.getElementById('mypolyline')?.getAttribute('points')
+    if (rect) {
+      points1 = ` ${e.clientX - rect.left},${e.clientY - rect.top}`
+      document.getElementById('mypolyline')?.setAttribute('points', points1)
+    }
+    // console.log(points1)
   }
 
-  function MouseMoveHandle(e) {
+  function MouseMoveHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     console.log('mouse moved but isDrawing is ' + isDrawing)
 
     if (isDrawing) {
-      var rect = document.getElementById('DrawingBoard').getBoundingClientRect()
-      var points1 = document.getElementById('mypolyline').getAttribute('points')
-      points1 += ` ${e.clientX - rect.left},${e.clientY - rect.top}`
-      document.getElementById('mypolyline').setAttribute('points', points1)
-      // console.log(points1);
+      var rect = document
+        .getElementById('DrawingBoard')
+        ?.getBoundingClientRect()
+      var points1 = document
+        .getElementById('mypolyline')
+        ?.getAttribute('points')
+      if (rect) {
+        points1 += ` ${e.clientX - rect.left},${e.clientY - rect.top}`
+        document
+          .getElementById('mypolyline')
+          ?.setAttribute('points', points1 ? points1 : '')
+      } // console.log(points1);
     }
   }
 
