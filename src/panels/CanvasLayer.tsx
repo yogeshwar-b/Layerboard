@@ -1,3 +1,4 @@
+import { forwardRef, useRef, useState } from 'react'
 import { Tools } from '../enums/tools'
 
 interface CanvasLayerProps {
@@ -9,12 +10,15 @@ interface CanvasLayerProps {
 
 var isDrawing: boolean = false
 var path2 = []
+
 export const CanvasLayer = ({
   canvasId,
   toolRef,
   ActiveLayer,
-  className,
+  className
 }: CanvasLayerProps) => {
+  const ActivePolyLineRef = useRef<HTMLElement>(null)
+  // const [PolyLineList, changePolyLineList] = useState([])
   let CanvasLayerId = 'DrawingBoard' + canvasId
   return (
     <div
@@ -26,7 +30,10 @@ export const CanvasLayer = ({
       onMouseUp={MouseUpHandle}
       style={{ height: '100%' }}
     >
-      {<PolyLineSVG />}
+      {<PolyLineSVG ref={ActivePolyLineRef} points={''} />}
+      {/* {PolyLineList.map((i) => {
+        return i
+      })} */}
     </div>
   )
   function MouseDownHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -34,10 +41,13 @@ export const CanvasLayer = ({
     path2 = []
     var rect = document.getElementById(CanvasLayerId)?.getBoundingClientRect()
 
-    var points1 = document.getElementById('mypolyline')?.getAttribute('points')
     if (rect) {
-      points1 = ` ${e.clientX - rect.left},${e.clientY - rect.top}`
+      var points1 = ` ${e.clientX - rect.left},${e.clientY - rect.top}`
       document.getElementById('mypolyline')?.setAttribute('points', points1)
+      // const polylineelement = (
+      //   <PolyLineSVG points={points1} ref={ActivePolyLineRef} />
+      // )
+      // changePolyLineList([...PolyLineList, polylineelement])
     }
     // console.log(points1)
   }
@@ -46,18 +56,15 @@ export const CanvasLayer = ({
     console.log('mouse moved but isDrawing is ' + isDrawing)
 
     if (isDrawing) {
-      var rect = document
-        .getElementById('DrawingBoard')
-        ?.getBoundingClientRect()
-      var points1 = document
-        .getElementById('mypolyline')
-        ?.getAttribute('points')
+      var rect = document.getElementById(CanvasLayerId)?.getBoundingClientRect()
+      var points1 = ActivePolyLineRef.current?.getAttribute('points')
       if (rect) {
         points1 += ` ${e.clientX - rect.left},${e.clientY - rect.top}`
-        document
-          .getElementById('mypolyline')
-          ?.setAttribute('points', points1 ? points1 : '')
-      } // console.log(points1);
+        ActivePolyLineRef.current?.setAttribute(
+          'points',
+          points1 ? points1 : ''
+        )
+      }
     }
   }
 
@@ -73,19 +80,20 @@ export const CanvasLayer = ({
   }
 }
 
-const PolyLineSVG = () => {
+const PolyLineSVG = forwardRef(({ points }, ref) => {
   return (
-    <svg height={'100%'} width={'auto'}>
+    <svg height={'100%'} width={'100%'}>
       <polyline
         id='mypolyline'
-        points={''}
+        points={points}
         style={{
           strokeWidth: '5px',
           stroke: 'red',
           fill: 'none',
-          color: 'red',
+          color: 'red'
         }}
+        ref={ref}
       ></polyline>
     </svg>
   )
-}
+})
