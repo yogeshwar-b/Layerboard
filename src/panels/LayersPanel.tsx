@@ -3,6 +3,7 @@ import { LayerButton } from '../components/LayerButton'
 import '../styles/utils.css'
 import { CanvasHandle } from './CanvasContainer'
 import '../styles/layerpanel.css'
+import { CanvasIdPrefix } from '../constants'
 
 interface LayersPanelProps {
   className: string
@@ -13,20 +14,21 @@ interface LayersPanelProps {
 export const LayersPanel = ({
   className,
   ActiveLayer,
-  CanvasContainerRef,
+  CanvasContainerRef
 }: LayersPanelProps) => {
   const [layerButtons, dispatch]: [number[], React.Dispatch<action>] =
     useReducer(layerButtonsReducer, [1])
   const layerPanelRef = useRef<HTMLDivElement>(null)
   function handleChange(i: string) {
     document
-      .getElementById(String(ActiveLayer.current))
+      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
       ?.classList.remove('topmost-layer')
+
     ActiveLayer.current = Number(i)
     console.log('Active Layer is- ' + i)
 
     document
-      .getElementById(String(ActiveLayer.current))
+      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
       ?.classList.add('topmost-layer')
   }
 
@@ -110,7 +112,7 @@ function layerButtonsReducer(layerButtons: number[], action: action) {
     case 'Add':
       return [
         ...layerButtons,
-        layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : 1,
+        layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : 1
       ]
     case 'Delete':
       console.log('deleting ' + action.activeLayer.current + ' in layer panel')
