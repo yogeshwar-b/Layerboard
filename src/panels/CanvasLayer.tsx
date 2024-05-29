@@ -18,7 +18,7 @@ export const CanvasLayer = ({
   className
 }: CanvasLayerProps) => {
   const ActivePolyLineRef = useRef<HTMLElement>(null)
-  // const [PolyLineList, changePolyLineList] = useState([])
+  const [PolyLineList, changePolyLineList] = useState([])
   let CanvasLayerId = 'DrawingBoard' + canvasId
   return (
     <div
@@ -30,10 +30,9 @@ export const CanvasLayer = ({
       onMouseUp={MouseUpHandle}
       style={{ height: '100%' }}
     >
-      {<PolyLineSVG ref={ActivePolyLineRef} points={''} />}
-      {/* {PolyLineList.map((i) => {
+      {PolyLineList.map((i) => {
         return i
-      })} */}
+      })}
     </div>
   )
   function MouseDownHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -43,11 +42,10 @@ export const CanvasLayer = ({
 
     if (rect) {
       var points1 = ` ${e.clientX - rect.left},${e.clientY - rect.top}`
-      document.getElementById('mypolyline')?.setAttribute('points', points1)
-      // const polylineelement = (
-      //   <PolyLineSVG points={points1} ref={ActivePolyLineRef} />
-      // )
-      // changePolyLineList([...PolyLineList, polylineelement])
+      const polylineelement = (
+        <PolyLineSVG points={points1} ref={ActivePolyLineRef} />
+      )
+      changePolyLineList([...PolyLineList, polylineelement])
     }
     // console.log(points1)
   }
@@ -82,7 +80,7 @@ export const CanvasLayer = ({
 
 const PolyLineSVG = forwardRef(({ points }, ref) => {
   return (
-    <svg height={'100%'} width={'100%'}>
+    <svg height={'100%'} width={'100%'} style={{ position: 'absolute' }}>
       <polyline
         id='mypolyline'
         points={points}
