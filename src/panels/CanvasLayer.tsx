@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useState } from 'react'
+import { ForwardedRef, ReactNode, forwardRef, useRef, useState } from 'react'
 import { Tools } from '../enums/tools'
 
 interface CanvasLayerProps {
@@ -9,7 +9,6 @@ interface CanvasLayerProps {
 }
 
 var isDrawing: boolean = false
-var path2 = []
 
 export const CanvasLayer = ({
   canvasId,
@@ -17,8 +16,8 @@ export const CanvasLayer = ({
   ActiveLayer,
   className
 }: CanvasLayerProps) => {
-  const ActivePolyLineRef = useRef<HTMLElement>(null)
-  const [PolyLineList, changePolyLineList] = useState([])
+  const ActivePolyLineRef = useRef<SVGPolylineElement>(null)
+  const [PolyLineList, changePolyLineList] = useState<Array<ReactNode>>([])
   let CanvasLayerId = 'DrawingBoard' + canvasId
   return (
     <div
@@ -36,16 +35,17 @@ export const CanvasLayer = ({
     </div>
   )
   function MouseDownHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    isDrawing = true
-    path2 = []
-    var rect = document.getElementById(CanvasLayerId)?.getBoundingClientRect()
+    if (toolRef.current == Tools.Brush) {
+      isDrawing = true
+      var rect = document.getElementById(CanvasLayerId)?.getBoundingClientRect()
 
-    if (rect) {
-      var points1 = ` ${e.clientX - rect.left},${e.clientY - rect.top}`
-      const polylineelement = (
-        <PolyLineSVG points={points1} ref={ActivePolyLineRef} />
-      )
-      changePolyLineList([...PolyLineList, polylineelement])
+      if (rect) {
+        var points1 = ` ${e.clientX - rect.left},${e.clientY - rect.top}`
+        const polylineelement = (
+          <PolyLineSVG points={points1} ref={ActivePolyLineRef} />
+        )
+        changePolyLineList([...PolyLineList, polylineelement])
+      }
     }
     // console.log(points1)
   }
@@ -53,7 +53,7 @@ export const CanvasLayer = ({
   function MouseMoveHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     console.log('mouse moved but isDrawing is ' + isDrawing)
 
-    if (isDrawing) {
+    if (toolRef.current == Tools.Brush && isDrawing) {
       var rect = document.getElementById(CanvasLayerId)?.getBoundingClientRect()
       var points1 = ActivePolyLineRef.current?.getAttribute('points')
       if (rect) {
@@ -67,31 +67,35 @@ export const CanvasLayer = ({
   }
 
   // function MouseOutHandle() {
-  //   console.log("mouseOut");
-  //   isDrawing = false;
+  //   console.log('mouseOut')
+  //   if (toolRef.current == Tools.Brush) isDrawing = false
   // }
 
   function MouseUpHandle() {
     console.log('mouseUp')
-
-    isDrawing = false
+    if (toolRef.current == Tools.Brush) isDrawing = false
   }
 }
 
-const PolyLineSVG = forwardRef(({ points }, ref) => {
-  return (
-    <svg height={'100%'} width={'100%'} style={{ position: 'absolute' }}>
-      <polyline
-        id='mypolyline'
-        points={points}
-        style={{
-          strokeWidth: '5px',
-          stroke: 'red',
-          fill: 'none',
-          color: 'red'
-        }}
-        ref={ref}
-      ></polyline>
-    </svg>
-  )
-})
+interface PolyLineSVGProps {
+  points: string
+}
+const PolyLineSVG = forwardRef(
+  ({ points }: PolyLineSVGProps, ref: ForwardedRef<SVGPolylineElement>) => {
+    return (
+      <svg height={'100%'} width={'100%'} style={{ position: 'absolute' }}>
+        <polyline
+          id='mypolyline'
+          points={points}
+          style={{
+            strokeWidth: '5px',
+            stroke: 'red',
+            fill: 'none',
+            color: 'red'
+          }}
+          ref={ref}
+        ></polyline>
+      </svg>
+    )
+  }
+)
