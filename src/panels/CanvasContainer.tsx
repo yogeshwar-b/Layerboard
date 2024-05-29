@@ -17,7 +17,7 @@ interface CanvasContainerProps {
   ActiveLayer: React.MutableRefObject<number>
 }
 export const CanvasContainer = forwardRef(
-  ({ ToolRef, ActiveLayer }: CanvasContainerProps, ref) => {
+  ({ ToolRef }: CanvasContainerProps, ref) => {
     const [CanvasList, dispatch] = useReducer(CanvasReducer, ['1'])
     useImperativeHandle(ref, () => ({
       test() {
@@ -38,7 +38,7 @@ export const CanvasContainer = forwardRef(
         } else {
           dispatch({ type: 'add', canvasName: name })
         }
-      },
+      }
     }))
     return (
       <div className='top-left pos-abs height-max width-max'>
@@ -49,7 +49,7 @@ export const CanvasContainer = forwardRef(
               canvasId={c}
               key={c}
               toolRef={ToolRef}
-              ActiveLayer={ActiveLayer}
+              // ActiveLayer={ActiveLayer}
             />
           )
         })}

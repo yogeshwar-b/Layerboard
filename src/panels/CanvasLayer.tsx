@@ -1,24 +1,20 @@
 import { ForwardedRef, ReactNode, forwardRef, useRef, useState } from 'react'
 import { Tools } from '../enums/tools'
+import { CanvasIdPrefix } from '../constants'
 
 interface CanvasLayerProps {
   canvasId: string
   toolRef: React.MutableRefObject<Tools>
-  ActiveLayer: React.MutableRefObject<number>
+  // ActiveLayer: React.MutableRefObject<number>
   className: string
 }
 
 var isDrawing: boolean = false
 
-export const CanvasLayer = ({
-  canvasId,
-  toolRef,
-  ActiveLayer,
-  className
-}: CanvasLayerProps) => {
+export const CanvasLayer = ({ canvasId, toolRef }: CanvasLayerProps) => {
   const ActivePolyLineRef = useRef<SVGPolylineElement>(null)
   const [PolyLineList, changePolyLineList] = useState<Array<ReactNode>>([])
-  let CanvasLayerId = 'DrawingBoard' + canvasId
+  let CanvasLayerId = CanvasIdPrefix + canvasId
   return (
     <div
       id={CanvasLayerId}
@@ -27,7 +23,7 @@ export const CanvasLayer = ({
       onMouseMove={MouseMoveHandle}
       // onMouseOut={MouseOutHandle}
       onMouseUp={MouseUpHandle}
-      style={{ height: '100%' }}
+      style={{ height: '100%', width: '100%', position: 'absolute' }}
     >
       {PolyLineList.map((i) => {
         return i
@@ -35,6 +31,8 @@ export const CanvasLayer = ({
     </div>
   )
   function MouseDownHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    // console.log('mouse moved but isDrawing is ' + isDrawing)
+
     if (toolRef.current == Tools.Brush) {
       isDrawing = true
       var rect = document.getElementById(CanvasLayerId)?.getBoundingClientRect()
