@@ -48,7 +48,7 @@ export const CanvasContainer = forwardRef(
               className='top-left pos-abs'
               canvasId={c}
               key={c}
-              toolRef={ToolRef}
+              ToolRef={ToolRef}
               // ActiveLayer={ActiveLayer}
             />
           )
