@@ -4,16 +4,15 @@ import { CanvasIdPrefix } from '../constants'
 
 interface CanvasLayerProps {
   canvasId: string
-  toolRef: React.MutableRefObject<Tools>
-  // ActiveLayer: React.MutableRefObject<number>
+  ToolRef: React.MutableRefObject<Tools>
   className: string
 }
 
-var isDrawing: boolean = false
-
-export const CanvasLayer = ({ canvasId, toolRef }: CanvasLayerProps) => {
+export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
   const ActivePolyLineRef = useRef<SVGPolylineElement>(null)
   const [PolyLineList, changePolyLineList] = useState<Array<ReactNode>>([])
+  const isToolActive = useRef<boolean>(false)
+
   let CanvasLayerId = CanvasIdPrefix + canvasId
   return (
     <div
@@ -32,26 +31,32 @@ export const CanvasLayer = ({ canvasId, toolRef }: CanvasLayerProps) => {
   )
   function MouseDownHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     // console.log('mouse moved but isDrawing is ' + isDrawing)
+    isToolActive.current = true
 
-    if (toolRef.current == Tools.Brush) {
-      isDrawing = true
+    if (ToolRef.current == Tools.Brush) {
       var rect = document.getElementById(CanvasLayerId)?.getBoundingClientRect()
 
       if (rect) {
         var points1 = ` ${e.clientX - rect.left},${e.clientY - rect.top}`
         const polylineelement = (
-          <PolyLineSVG points={points1} ref={ActivePolyLineRef} />
+          <PolyLineSVG
+            points={points1}
+            ref={ActivePolyLineRef}
+            ToolRef={ToolRef}
+            isToolActive={isToolActive}
+            //These are the line components so the key will never be used and does not matter
+            key={PolyLineList.length + 1}
+          />
         )
         changePolyLineList([...PolyLineList, polylineelement])
       }
     }
-    // console.log(points1)
   }
 
   function MouseMoveHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    console.log('mouse moved but isDrawing is ' + isDrawing)
+    // console.log('mouse moved but isDrawing is ' + isDrawing)
 
-    if (toolRef.current == Tools.Brush && isDrawing) {
+    if (ToolRef.current == Tools.Brush && isToolActive.current) {
       var rect = document.getElementById(CanvasLayerId)?.getBoundingClientRect()
       var points1 = ActivePolyLineRef.current?.getAttribute('points')
       if (rect) {
@@ -70,29 +75,48 @@ export const CanvasLayer = ({ canvasId, toolRef }: CanvasLayerProps) => {
   // }
 
   function MouseUpHandle() {
-    console.log('mouseUp')
-    if (toolRef.current == Tools.Brush) isDrawing = false
+    isToolActive.current = false
   }
 }
 
 interface PolyLineSVGProps {
   points: string
+  ToolRef: React.MutableRefObject<Tools>
+  isToolActive: React.MutableRefObject<boolean>
 }
 const PolyLineSVG = forwardRef(
-  ({ points }: PolyLineSVGProps, ref: ForwardedRef<SVGPolylineElement>) => {
+  (
+    { points, ToolRef, isToolActive }: PolyLineSVGProps,
+    ref: ForwardedRef<SVGPolylineElement>
+  ) => {
     return (
-      <svg height={'100%'} width={'100%'} style={{ position: 'absolute' }}>
-        <polyline
-          id='mypolyline'
-          points={points}
-          style={{
-            strokeWidth: '5px',
-            stroke: 'red',
-            fill: 'none',
-            color: 'red'
-          }}
-          ref={ref}
-        ></polyline>
+      <svg
+        height={'100%'}
+        width={'100%'}
+        style={{ position: 'absolute', pointerEvents: 'none' }}
+      >
+        <g>
+          <polyline
+            points={points}
+            style={{
+              strokeWidth: '5px',
+              stroke: 'red',
+              fill: 'none',
+              color: 'red',
+              pointerEvents: 'all'
+            }}
+            ref={ref}
+            onMouseDown={() => {
+              //True if Tool is not None
+              isToolActive.current = ToolRef.current != Tools.None
+            }}
+            onMouseMove={(e: React.MouseEvent) => {
+              if (isToolActive.current && ToolRef.current == Tools.Eraser) {
+                ;(e.target as SVGPolylineElement).points.clear()
+              }
+            }}
+          ></polyline>
+        </g>
       </svg>
     )
   }

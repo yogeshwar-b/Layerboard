@@ -32,24 +32,12 @@ export const LayersPanel = ({
       ?.classList.add('topmost-layer')
   }
 
-  // useEffect(() => {
-  //   const radio = layerPanelRef.current?.getElementsByTagName('input')
-  //   if (radio)
-  //     for (let i = 0; i < radio.length; i++) {
-  //       if (radio[i] && radio[i].id == String(ActiveLayer.current))
-  //         radio[i].checked = true
-  //     }
-  // })
-
   return (
     <div className={className + ' layer-panel'} ref={layerPanelRef}>
       <div>LayersPanel</div>
       <div className=''>
         <button
           onClick={() => {
-            // if (BoardRef?.current) {
-            //   BoardRef.current.addLayer(String(Math.max(...layerButtons) + 1))
-            // }
             if (CanvasContainerRef?.current)
               CanvasContainerRef.current.CanvasAdd(
                 String(
@@ -61,7 +49,6 @@ export const LayersPanel = ({
                 layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : '1'
               )
             )
-            // ActiveLayer.current = Math.max(...layerButtons) + 1
             dispatch({ type: 'Add', activeLayer: ActiveLayer })
           }}
         >
@@ -69,18 +56,7 @@ export const LayersPanel = ({
         </button>
         <button
           onClick={() => {
-            // if (BoardRef?.current) {
-            //   BoardRef.current.deleteLayer(String(activeLayer.current))
-            // }
-            // var newLayer = ActiveLayer.current
-            // if (layerButtons.indexOf(ActiveLayer.current) - 1 >= 0) {
-            //   newLayer =
-            //     layerButtons[layerButtons.indexOf(ActiveLayer.current) - 1]
-            // } else {
-            //   newLayer = -1
-            // }
             dispatch({ type: 'Delete', activeLayer: ActiveLayer })
-            // handleChange(String(newLayer))
             if (CanvasContainerRef?.current)
               CanvasContainerRef.current.CanvasDel(String(ActiveLayer.current))
           }}
