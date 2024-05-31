@@ -11,7 +11,6 @@ export const LayerButton = (props: LayerButtonProps) => {
     <div className='border-small flex-row'>
       <input
         onClick={() => {
-          console.log('onchange layerbutton called')
           props.onChecked(props.name)
         }}
         type='radio'
