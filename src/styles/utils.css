@@ -65,6 +65,7 @@
 }
 
 .palette {
+  margin: 0;
   height: var(--palette-height);
 }
 
