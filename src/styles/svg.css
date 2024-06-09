@@ -3,8 +3,9 @@
   stroke: red;
   fill: none;
   pointer-events: all;
+  transform: matrix(1, 0, 0, 1, 0, 0);
 }
 
-.poly-line-done:hover {
+/* .poly-line-done:hover {
   stroke-dasharray: 9;
-}
+} */
