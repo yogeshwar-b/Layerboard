@@ -1,7 +1,6 @@
 import { forwardRef, useImperativeHandle, useReducer } from 'react'
 import { Tools } from '../enums/tools'
 import '../styles/utils.css'
-import '../styles/canvasbox.css'
 import { CanvasLayer } from './CanvasLayer'
 
 export interface CanvasHandle {
