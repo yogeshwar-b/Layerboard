@@ -11,7 +11,9 @@ import {
 import { Tools } from '../enums/tools'
 import { CanvasIdPrefix } from '../constants'
 import '../styles/svg.css'
-
+import '../styles/canvaslayer.css'
+var xdef = -1
+var ydef = -1
 interface CanvasLayerProps {
   canvasId: string
   ToolRef: React.MutableRefObject<Tools>
@@ -40,11 +42,18 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
           MoveToolOverlay.name
         } is activated ${MoveToolOverlay.PolyLineRef?.current.getAttribute(
           'name'
-        )}`
+        )}  ${
+          MoveToolOverlay.PolyLineRef?.current?.getBoundingClientRect().height
+        } ${
+          MoveToolOverlay.PolyLineRef?.current?.getBoundingClientRect().width
+        }`
       )
     }
   })
-
+  const isMoving = useRef(false)
+  function setIsMoving(val: boolean) {
+    isMoving.current = val
+  }
   return (
     <div
       id={CanvasLayerId}
@@ -55,6 +64,103 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
       onMouseUp={MouseUpHandle}
       style={{ height: '100%', width: '100%', position: 'absolute' }}
     >
+      {MoveToolOverlay.ShowMoveToolOverlay ? (
+        <div
+          draggable='true'
+          className='move-overlay'
+          style={{
+            zIndex: 120,
+            height:
+              MoveToolOverlay.PolyLineRef?.current?.getBoundingClientRect()
+                .height,
+            width:
+              MoveToolOverlay.PolyLineRef?.current?.getBoundingClientRect()
+                .width,
+            top: MoveToolOverlay.PolyLineRef?.current?.getBoundingClientRect()
+              .top,
+            left: MoveToolOverlay.PolyLineRef?.current?.getBoundingClientRect()
+              .left,
+            transform: 'matrix(1, 0, 0, 1, 0, 0)'
+          }}
+          onPointerDown={(e: React.MouseEvent) => {
+            //True if Tool is not None
+            isToolActive.current = ToolRef.current != Tools.None
+            if (ToolRef.current == Tools.Move) {
+              xdef = e.clientX
+              ydef = e.clientY
+              setIsMoving(true)
+            }
+          }}
+          onDrag={(e: React.MouseEvent) => {
+            if (isToolActive.current && ToolRef.current == Tools.Eraser) {
+              ;(e.target as SVGPolylineElement).points.clear()
+            }
+            if (ToolRef.current == Tools.Move) {
+              if (isMoving.current) {
+                console.log(`${e.clientX} ${e.clientY}`)
+
+                var x = window.getComputedStyle(e.target, null).transform
+                var numberPattern = /-?\d+\.?\d+|\d+/g
+                var { top, left, bottom, right, height, width } =
+                  e.target.getBoundingClientRect()
+                var matrix = x.match(numberPattern)
+                // console.log(x, window.getComputedStyle(e.target, null))
+                var transx = e.clientX - xdef
+                var transy = e.clientY - ydef
+                xdef = e.clientX
+                ydef = e.clientY
+                matrix[4] = transx + Number(matrix[4])
+                matrix[5] = transy + Number(matrix[5])
+                // console.log(transx, transy);
+                // console.log(xdef, ydef, transx, transy)
+                e.target.style.transform = `matrix(${matrix.join(',')})`
+                if (MoveToolOverlay.PolyLineRef?.current)
+                  MoveToolOverlay.PolyLineRef.current.style.transform = `matrix(${matrix.join(
+                    ','
+                  )})`
+              }
+            }
+          }}
+          onDragEnd={(e: React.MouseEvent) => {
+            if (isToolActive.current && ToolRef.current == Tools.Eraser) {
+              ;(e.target as SVGPolylineElement).points.clear()
+            }
+            if (ToolRef.current == Tools.Move) {
+              if (isMoving.current) {
+                // console.log(`${e.clientX} ${e.clientY}`);
+
+                var x = window.getComputedStyle(e.target, null).transform
+                var numberPattern = /-?\d+\.?\d+|\d+/g
+                var { top, left, bottom, right, height, width } =
+                  e.target.getBoundingClientRect()
+                var matrix = x.match(numberPattern)
+                // console.log(x, window.getComputedStyle(e.target, null))
+                var transx = e.clientX - xdef
+                var transy = e.clientY - ydef
+                xdef = e.clientX
+                ydef = e.clientY
+                matrix[4] = transx + Number(matrix[4])
+                matrix[5] = transy + Number(matrix[5])
+                // console.log(transx, transy);
+                // console.log(xdef, ydef, transx, transy)
+                e.target.style.transform = `matrix(${matrix.join(',')})`
+                if (MoveToolOverlay.PolyLineRef?.current)
+                  MoveToolOverlay.PolyLineRef.current.style.transform = `matrix(${matrix.join(
+                    ','
+                  )})`
+              }
+            }
+          }}
+          onPointerUp={() => {
+            console.log('is moving deactivated')
+            // xdef = -1
+            // ydef = -1
+            setIsMoving(false)
+          }}
+        ></div>
+      ) : (
+        <></>
+      )}
       {PolyLineList.map((i) => {
         return i
       })}
@@ -79,6 +185,7 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
             // PolylinesRef={PolylinesRef}
             ActivePolyLineRef={ActivePolyLineRef}
             ToolRef={ToolRef}
+            setIsMoving={setIsMoving}
             isToolActive={isToolActive}
             changeMoveToolOverlay={changeMoveToolOverlay}
             //random string name
@@ -151,16 +258,11 @@ const PolyLineSVG = forwardRef(
       name,
       changeMoveToolOverlay,
       PolylinesRef,
-      ActivePolyLineRef
+      ActivePolyLineRef,
+      setIsMoving
     }: PolyLineSVGProps,
     ref: ForwardedRef<SVGPolylineElement>
   ) => {
-    var xdef = -1
-    var ydef = -1
-    const isMoving = useRef(false)
-    function setIsMoving(val: boolean) {
-      isMoving.current = val
-    }
     const newPolyLineRef = useRef(null)
     // PolylinesRef.current = [...PolylinesRef.current, newPolyLineRef]
     ActivePolyLineRef.current = newPolyLineRef
@@ -191,43 +293,43 @@ const PolyLineSVG = forwardRef(
                   PolyLineRef: newPolyLineRef,
                   name: name
                 })
-                xdef = e.clientX
-                ydef = e.clientY
-                setIsMoving(true)
+                // xdef = e.clientX
+                // ydef = e.clientY
+                // setIsMoving(true)
               }
             }}
-            onPointerMove={(e: React.MouseEvent) => {
-              if (isToolActive.current && ToolRef.current == Tools.Eraser) {
-                ;(e.target as SVGPolylineElement).points.clear()
-              }
-              if (ToolRef.current == Tools.Move) {
-                if (isMoving.current) {
-                  // console.log(`${e.clientX} ${e.clientY}`);
+            // onPointerMove={(e: React.MouseEvent) => {
+            //   if (isToolActive.current && ToolRef.current == Tools.Eraser) {
+            //     ;(e.target as SVGPolylineElement).points.clear()
+            //   }
+            //   if (ToolRef.current == Tools.Move) {
+            //     if (isMoving.current) {
+            //       // console.log(`${e.clientX} ${e.clientY}`);
 
-                  var x = window.getComputedStyle(e.target, null).transform
-                  var numberPattern = /-?\d+\.?\d+|\d+/g
-                  var { top, left, bottom, right, height, width } =
-                    e.target.getBoundingClientRect()
-                  var matrix = x.match(numberPattern)
-                  // console.log(x, window.getComputedStyle(e.target, null))
-                  var transx = e.clientX - xdef
-                  var transy = e.clientY - ydef
-                  xdef = e.clientX
-                  ydef = e.clientY
-                  matrix[4] = transx + Number(matrix[4])
-                  matrix[5] = transy + Number(matrix[5])
-                  // console.log(transx, transy);
-                  console.log(xdef, ydef, transx, transy)
-                  e.target.style.transform = `matrix(${matrix.join(',')})`
-                }
-              }
-            }}
-            onPointerUp={() => {
-              console.log('is moving deactivated')
-              // xdef = -1
-              // ydef = -1
-              setIsMoving(false)
-            }}
+            //       var x = window.getComputedStyle(e.target, null).transform
+            //       var numberPattern = /-?\d+\.?\d+|\d+/g
+            //       var { top, left, bottom, right, height, width } =
+            //         e.target.getBoundingClientRect()
+            //       var matrix = x.match(numberPattern)
+            //       // console.log(x, window.getComputedStyle(e.target, null))
+            //       var transx = e.clientX - xdef
+            //       var transy = e.clientY - ydef
+            //       xdef = e.clientX
+            //       ydef = e.clientY
+            //       matrix[4] = transx + Number(matrix[4])
+            //       matrix[5] = transy + Number(matrix[5])
+            //       // console.log(transx, transy);
+            //       console.log(xdef, ydef, transx, transy)
+            //       e.target.style.transform = `matrix(${matrix.join(',')})`
+            //     }
+            //   }
+            // }}
+            // onPointerUp={() => {
+            //   console.log('is moving deactivated')
+            //   // xdef = -1
+            //   // ydef = -1
+            //   setIsMoving(false)
+            // }}
           ></polyline>
         </g>
       </svg>
