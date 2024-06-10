@@ -33,6 +33,9 @@
 .flex-center {
   align-items: center;
 }
+.flex-col-center {
+  justify-content: center;
+}
 .flex-wrap {
   flex-wrap: wrap;
 }
