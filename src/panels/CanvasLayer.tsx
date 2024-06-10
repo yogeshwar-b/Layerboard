@@ -1,4 +1,13 @@
-import { ForwardedRef, ReactNode, forwardRef, useRef, useState } from 'react'
+import {
+  ForwardedRef,
+  MutableRefObject,
+  ReactNode,
+  RefObject,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { Tools } from '../enums/tools'
 import { CanvasIdPrefix } from '../constants'
 import '../styles/svg.css'
@@ -8,13 +17,34 @@ interface CanvasLayerProps {
   ToolRef: React.MutableRefObject<Tools>
   className: string
 }
-
+interface MoveToolOverlay {
+  ShowMoveToolOverlay: boolean
+  PolyLineRef: RefObject<SVGPolylineElement> | null
+  name: string
+}
 export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
-  const ActivePolyLineRef = useRef<SVGPolylineElement>(null)
+  const ActivePolyLineRef = useRef(null)
+  // const PolylinesRef = useRef([])
   const [PolyLineList, changePolyLineList] = useState<Array<ReactNode>>([])
   const isToolActive = useRef<boolean>(false)
-
+  const [MoveToolOverlay, changeMoveToolOverlay] = useState<MoveToolOverlay>({
+    ShowMoveToolOverlay: false,
+    PolyLineRef: null,
+    name: ''
+  })
   const CanvasLayerId = CanvasIdPrefix + canvasId
+  useEffect(() => {
+    if (MoveToolOverlay.ShowMoveToolOverlay) {
+      console.log(
+        `layerUseEffect ${
+          MoveToolOverlay.name
+        } is activated ${MoveToolOverlay.PolyLineRef?.current.getAttribute(
+          'name'
+        )}`
+      )
+    }
+  })
+
   return (
     <div
       id={CanvasLayerId}
@@ -41,16 +71,23 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
 
       if (rect) {
         const points1 = ` ${e.clientX - rect.left},${e.clientY - rect.top}`
+        // PolylinesRef.current = [...PolylinesRef.current, useRef(null)]
         const polylineelement = (
           <PolyLineSVG
             points={points1}
-            ref={ActivePolyLineRef}
+            // ref={(el) => (PolylinesRef.current = [...PolylinesRef.current, el])}
+            // PolylinesRef={PolylinesRef}
+            ActivePolyLineRef={ActivePolyLineRef}
             ToolRef={ToolRef}
             isToolActive={isToolActive}
+            changeMoveToolOverlay={changeMoveToolOverlay}
+            //random string name
+            name={String(PolyLineList.length)}
             //These are the line components so the key will never be used and does not matter
             key={PolyLineList.length + 1}
           />
         )
+
         changePolyLineList([...PolyLineList, polylineelement])
       }
     }
@@ -63,13 +100,24 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
       const rect = document
         .getElementById(CanvasLayerId)
         ?.getBoundingClientRect()
-      let points1 = ActivePolyLineRef.current?.getAttribute('points')
+
+      let points1 = ActivePolyLineRef?.current?.current.getAttribute('points')
       if (rect) {
         points1 += ` ${e.clientX - rect.left},${e.clientY - rect.top}`
-        ActivePolyLineRef.current?.setAttribute(
+        ActivePolyLineRef?.current?.current.setAttribute(
           'points',
           points1 ? points1 : ''
         )
+
+        // let points1 =
+        //   PolylinesRef.current[
+        //     PolylinesRef.current.length - 1
+        //   ]?.current.getAttribute('points')
+        // if (rect) {
+        //   points1 += ` ${e.clientX - rect.left},${e.clientY - rect.top}`
+        //   PolylinesRef.current[
+        //     PolylinesRef.current.length - 1
+        //   ]?.current.setAttribute('points', points1 ? points1 : '')
       }
     }
   }
@@ -81,7 +129,9 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
 
   function MouseUpHandle() {
     isToolActive.current = false
-    ActivePolyLineRef.current?.classList.add('poly-line-done')
+    // PolylinesRef.current[PolylinesRef.current.length - 1]?.classList.add(
+    //   'poly-line-done'
+    // )
   }
 }
 
@@ -89,10 +139,20 @@ interface PolyLineSVGProps {
   points: string
   ToolRef: React.MutableRefObject<Tools>
   isToolActive: React.MutableRefObject<boolean>
+  name: string
+  changeMoveToolOverlay: React.Dispatch<React.SetStateAction<MoveToolOverlay>>
 }
 const PolyLineSVG = forwardRef(
   (
-    { points, ToolRef, isToolActive }: PolyLineSVGProps,
+    {
+      points,
+      ToolRef,
+      isToolActive,
+      name,
+      changeMoveToolOverlay,
+      PolylinesRef,
+      ActivePolyLineRef
+    }: PolyLineSVGProps,
     ref: ForwardedRef<SVGPolylineElement>
   ) => {
     var xdef = -1
@@ -101,6 +161,9 @@ const PolyLineSVG = forwardRef(
     function setIsMoving(val: boolean) {
       isMoving.current = val
     }
+    const newPolyLineRef = useRef(null)
+    // PolylinesRef.current = [...PolylinesRef.current, newPolyLineRef]
+    ActivePolyLineRef.current = newPolyLineRef
     return (
       <svg
         height={'100%'}
@@ -112,12 +175,22 @@ const PolyLineSVG = forwardRef(
           <polyline
             points={points}
             className='poly-line'
-            ref={ref}
+            ref={newPolyLineRef}
+            name={name}
             onPointerDown={(e: React.MouseEvent) => {
               //True if Tool is not None
               isToolActive.current = ToolRef.current != Tools.None
               if (ToolRef.current == Tools.Move) {
-                console.log('ismoving activated')
+                console.log(
+                  `ismoving activated on  + ${e.target.getAttribute(
+                    'name'
+                  )} ${newPolyLineRef.current.getAttribute('name')}`
+                )
+                changeMoveToolOverlay({
+                  ShowMoveToolOverlay: true,
+                  PolyLineRef: newPolyLineRef,
+                  name: name
+                })
                 xdef = e.clientX
                 ydef = e.clientY
                 setIsMoving(true)
