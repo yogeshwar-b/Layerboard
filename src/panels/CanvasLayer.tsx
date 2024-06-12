@@ -68,9 +68,6 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
             }
           }}
           onDrag={(e: React.MouseEvent) => {
-            if (isToolActive.current && ToolRef.current == Tools.Eraser) {
-              ;(e.target as SVGPolylineElement).points.clear()
-            }
             if (ToolRef.current == Tools.Move) {
               if (isMoving.current) {
                 var x = window.getComputedStyle(
@@ -226,6 +223,11 @@ const PolyLineSVG = ({
       height={'100%'}
       width={'100%'}
       style={{ position: 'absolute', pointerEvents: 'none' }}
+      onPointerMove={(e: React.MouseEvent) => {
+        if (isToolActive.current && ToolRef.current == Tools.Eraser) {
+          ;(e.target as SVGPolylineElement).points.clear()
+        }
+      }}
     >
       <g>
         {/* isMoving?<div>something moving</div> */}
