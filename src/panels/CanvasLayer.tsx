@@ -1,13 +1,4 @@
-import {
-  ForwardedRef,
-  MutableRefObject,
-  ReactNode,
-  RefObject,
-  forwardRef,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import { MutableRefObject, ReactNode, RefObject, useRef, useState } from 'react'
 import { Tools } from '../enums/tools'
 import { CanvasIdPrefix } from '../constants'
 import '../styles/svg.css'
@@ -25,8 +16,7 @@ interface MoveToolOverlay {
   name: string
 }
 export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
-  const ActivePolyLineRef = useRef(null)
-  // const PolylinesRef = useRef([])
+  const ActivePolyLineRef = useRef<RefObject<SVGPolylineElement> | null>(null)
   const [PolyLineList, changePolyLineList] = useState<Array<ReactNode>>([])
   const isToolActive = useRef<boolean>(false)
   const [MoveToolOverlay, changeMoveToolOverlay] = useState<MoveToolOverlay>({
@@ -35,21 +25,7 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
     name: ''
   })
   const CanvasLayerId = CanvasIdPrefix + canvasId
-  useEffect(() => {
-    if (MoveToolOverlay.ShowMoveToolOverlay) {
-      console.log(
-        `layerUseEffect ${
-          MoveToolOverlay.name
-        } is activated ${MoveToolOverlay.PolyLineRef?.current.getAttribute(
-          'name'
-        )}  ${
-          MoveToolOverlay.PolyLineRef?.current?.getBoundingClientRect().height
-        } ${
-          MoveToolOverlay.PolyLineRef?.current?.getBoundingClientRect().width
-        }`
-      )
-    }
-  })
+
   const isMoving = useRef(false)
   function setIsMoving(val: boolean) {
     isMoving.current = val
@@ -92,32 +68,31 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
             }
           }}
           onDrag={(e: React.MouseEvent) => {
-            if (isToolActive.current && ToolRef.current == Tools.Eraser) {
-              ;(e.target as SVGPolylineElement).points.clear()
-            }
             if (ToolRef.current == Tools.Move) {
               if (isMoving.current) {
-                console.log(`${e.clientX} ${e.clientY}`)
-
-                var x = window.getComputedStyle(e.target, null).transform
+                var x = window.getComputedStyle(
+                  e.target as HTMLDivElement,
+                  null
+                ).transform
                 var numberPattern = /-?\d+\.?\d+|\d+/g
-                var { top, left, bottom, right, height, width } =
-                  e.target.getBoundingClientRect()
+
                 var matrix = x.match(numberPattern)
-                // console.log(x, window.getComputedStyle(e.target, null))
                 var transx = e.clientX - xdef
                 var transy = e.clientY - ydef
                 xdef = e.clientX
                 ydef = e.clientY
-                matrix[4] = transx + Number(matrix[4])
-                matrix[5] = transy + Number(matrix[5])
-                // console.log(transx, transy);
-                // console.log(xdef, ydef, transx, transy)
-                e.target.style.transform = `matrix(${matrix.join(',')})`
-                if (MoveToolOverlay.PolyLineRef?.current)
-                  MoveToolOverlay.PolyLineRef.current.style.transform = `matrix(${matrix.join(
-                    ','
-                  )})`
+                if (matrix) {
+                  matrix[4] = String(transx + Number(matrix[4]))
+                  matrix[5] = String(transy + Number(matrix[5]))
+                  ;(
+                    e.target as HTMLDivElement
+                  ).style.transform = `matrix(${matrix.join(',')})`
+
+                  if (MoveToolOverlay.PolyLineRef?.current)
+                    MoveToolOverlay.PolyLineRef.current.style.transform = `matrix(${matrix.join(
+                      ','
+                    )})`
+                }
               }
             }
           }}
@@ -127,27 +102,28 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
             }
             if (ToolRef.current == Tools.Move) {
               if (isMoving.current) {
-                // console.log(`${e.clientX} ${e.clientY}`);
-
-                var x = window.getComputedStyle(e.target, null).transform
+                var x = window.getComputedStyle(
+                  e.target as HTMLDivElement,
+                  null
+                ).transform
                 var numberPattern = /-?\d+\.?\d+|\d+/g
-                var { top, left, bottom, right, height, width } =
-                  e.target.getBoundingClientRect()
                 var matrix = x.match(numberPattern)
                 // console.log(x, window.getComputedStyle(e.target, null))
                 var transx = e.clientX - xdef
                 var transy = e.clientY - ydef
                 xdef = e.clientX
                 ydef = e.clientY
-                matrix[4] = transx + Number(matrix[4])
-                matrix[5] = transy + Number(matrix[5])
-                // console.log(transx, transy);
-                // console.log(xdef, ydef, transx, transy)
-                e.target.style.transform = `matrix(${matrix.join(',')})`
-                if (MoveToolOverlay.PolyLineRef?.current)
-                  MoveToolOverlay.PolyLineRef.current.style.transform = `matrix(${matrix.join(
-                    ','
-                  )})`
+                if (matrix) {
+                  matrix[4] = String(transx + Number(matrix[4]))
+                  matrix[5] = String(transy + Number(matrix[5]))
+                  ;(
+                    e.target as HTMLDivElement
+                  ).style.transform = `matrix(${matrix.join(',')})`
+                  if (MoveToolOverlay.PolyLineRef?.current)
+                    MoveToolOverlay.PolyLineRef.current.style.transform = `matrix(${matrix.join(
+                      ','
+                    )})`
+                }
               }
             }
           }}
@@ -185,7 +161,6 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
             // PolylinesRef={PolylinesRef}
             ActivePolyLineRef={ActivePolyLineRef}
             ToolRef={ToolRef}
-            setIsMoving={setIsMoving}
             isToolActive={isToolActive}
             changeMoveToolOverlay={changeMoveToolOverlay}
             //random string name
@@ -208,37 +183,19 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
         .getElementById(CanvasLayerId)
         ?.getBoundingClientRect()
 
-      let points1 = ActivePolyLineRef?.current?.current.getAttribute('points')
+      let points1 = ActivePolyLineRef?.current?.current?.getAttribute('points')
       if (rect) {
         points1 += ` ${e.clientX - rect.left},${e.clientY - rect.top}`
-        ActivePolyLineRef?.current?.current.setAttribute(
+        ActivePolyLineRef?.current?.current?.setAttribute(
           'points',
           points1 ? points1 : ''
         )
-
-        // let points1 =
-        //   PolylinesRef.current[
-        //     PolylinesRef.current.length - 1
-        //   ]?.current.getAttribute('points')
-        // if (rect) {
-        //   points1 += ` ${e.clientX - rect.left},${e.clientY - rect.top}`
-        //   PolylinesRef.current[
-        //     PolylinesRef.current.length - 1
-        //   ]?.current.setAttribute('points', points1 ? points1 : '')
       }
     }
   }
 
-  // function MouseOutHandle() {
-  //   console.log('mouseOut')
-  //   if (toolRef.current == Tools.Brush) isDrawing = false
-  // }
-
   function MouseUpHandle() {
     isToolActive.current = false
-    // PolylinesRef.current[PolylinesRef.current.length - 1]?.classList.add(
-    //   'poly-line-done'
-    // )
   }
 }
 
@@ -248,91 +205,50 @@ interface PolyLineSVGProps {
   isToolActive: React.MutableRefObject<boolean>
   name: string
   changeMoveToolOverlay: React.Dispatch<React.SetStateAction<MoveToolOverlay>>
+  ActivePolyLineRef: MutableRefObject<RefObject<SVGPolylineElement> | null>
 }
-const PolyLineSVG = forwardRef(
-  (
-    {
-      points,
-      ToolRef,
-      isToolActive,
-      name,
-      changeMoveToolOverlay,
-      PolylinesRef,
-      ActivePolyLineRef,
-      setIsMoving
-    }: PolyLineSVGProps,
-    ref: ForwardedRef<SVGPolylineElement>
-  ) => {
-    const newPolyLineRef = useRef(null)
-    // PolylinesRef.current = [...PolylinesRef.current, newPolyLineRef]
-    ActivePolyLineRef.current = newPolyLineRef
-    return (
-      <svg
-        height={'100%'}
-        width={'100%'}
-        style={{ position: 'absolute', pointerEvents: 'none' }}
-      >
-        <g>
-          {/* isMoving?<div>something moving</div> */}
-          <polyline
-            points={points}
-            className='poly-line'
-            ref={newPolyLineRef}
-            name={name}
-            onPointerDown={(e: React.MouseEvent) => {
-              //True if Tool is not None
-              isToolActive.current = ToolRef.current != Tools.None
-              if (ToolRef.current == Tools.Move) {
-                console.log(
-                  `ismoving activated on  + ${e.target.getAttribute(
-                    'name'
-                  )} ${newPolyLineRef.current.getAttribute('name')}`
-                )
-                changeMoveToolOverlay({
-                  ShowMoveToolOverlay: true,
-                  PolyLineRef: newPolyLineRef,
-                  name: name
-                })
-                // xdef = e.clientX
-                // ydef = e.clientY
-                // setIsMoving(true)
-              }
-            }}
-            // onPointerMove={(e: React.MouseEvent) => {
-            //   if (isToolActive.current && ToolRef.current == Tools.Eraser) {
-            //     ;(e.target as SVGPolylineElement).points.clear()
-            //   }
-            //   if (ToolRef.current == Tools.Move) {
-            //     if (isMoving.current) {
-            //       // console.log(`${e.clientX} ${e.clientY}`);
-
-            //       var x = window.getComputedStyle(e.target, null).transform
-            //       var numberPattern = /-?\d+\.?\d+|\d+/g
-            //       var { top, left, bottom, right, height, width } =
-            //         e.target.getBoundingClientRect()
-            //       var matrix = x.match(numberPattern)
-            //       // console.log(x, window.getComputedStyle(e.target, null))
-            //       var transx = e.clientX - xdef
-            //       var transy = e.clientY - ydef
-            //       xdef = e.clientX
-            //       ydef = e.clientY
-            //       matrix[4] = transx + Number(matrix[4])
-            //       matrix[5] = transy + Number(matrix[5])
-            //       // console.log(transx, transy);
-            //       console.log(xdef, ydef, transx, transy)
-            //       e.target.style.transform = `matrix(${matrix.join(',')})`
-            //     }
-            //   }
-            // }}
-            // onPointerUp={() => {
-            //   console.log('is moving deactivated')
-            //   // xdef = -1
-            //   // ydef = -1
-            //   setIsMoving(false)
-            // }}
-          ></polyline>
-        </g>
-      </svg>
-    )
-  }
-)
+const PolyLineSVG = ({
+  points,
+  ToolRef,
+  isToolActive,
+  name,
+  changeMoveToolOverlay,
+  ActivePolyLineRef
+}: PolyLineSVGProps) => {
+  const newPolyLineRef = useRef<SVGPolylineElement>(null)
+  // PolylinesRef.current = [...PolylinesRef.current, newPolyLineRef]
+  ActivePolyLineRef.current = newPolyLineRef
+  return (
+    <svg
+      height={'100%'}
+      width={'100%'}
+      style={{ position: 'absolute', pointerEvents: 'none' }}
+      onPointerMove={(e: React.MouseEvent) => {
+        if (isToolActive.current && ToolRef.current == Tools.Eraser) {
+          ;(e.target as SVGPolylineElement).points.clear()
+        }
+      }}
+    >
+      <g>
+        {/* isMoving?<div>something moving</div> */}
+        <polyline
+          points={points}
+          className='poly-line'
+          ref={newPolyLineRef}
+          name={name}
+          onPointerDown={() => {
+            //True if Tool is not None
+            isToolActive.current = ToolRef.current != Tools.None
+            if (ToolRef.current == Tools.Move) {
+              changeMoveToolOverlay({
+                ShowMoveToolOverlay: true,
+                PolyLineRef: newPolyLineRef,
+                name: name
+              })
+            }
+          }}
+        ></polyline>
+      </g>
+    </svg>
+  )
+}
