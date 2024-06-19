@@ -3,9 +3,9 @@ import { Tools } from '../enums/tools'
 import { CanvasIdPrefix } from '../constants'
 import '../styles/svg.css'
 import '../styles/canvaslayer.css'
-var xdef = -1
-var ydef = -1
-var offsetX, offsetY
+
+var offsetX = 0,
+  offsetY = 0
 interface CanvasLayerProps {
   canvasId: string
   ToolRef: React.MutableRefObject<Tools>
@@ -73,27 +73,42 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
           onPointerMove={(e: React.MouseEvent) => {
             if (ToolRef.current == Tools.Move && isMoving.current) {
               {
-                let draggableDiv = e.target as HTMLDivElement
+                const draggableDiv: HTMLDivElement = e.target as HTMLDivElement
+                let oldLeft: Number = Number(
+                  draggableDiv.style.left.slice(0, -2)
+                )
+                let oldTop: Number = Number(draggableDiv.style.top.slice(0, -2))
                 draggableDiv.style.left = `${e.clientX - offsetX}px`
                 draggableDiv.style.top = `${e.clientY - offsetY}px`
 
                 if (MoveToolOverlay.PolyLineRef?.current) {
                   var numberPattern = /-?\d+\.?\d+|\d+/g
 
-                  var matrix =
-                    MoveToolOverlay.PolyLineRef.current.style.transform.match(
-                      numberPattern
-                    )
-                  matrix[4] = String(Number(e.clientX) - Number(offsetX))
-                  matrix[5] = String(Number(e.clientY) - Number(offsetY))
-                  MoveToolOverlay.PolyLineRef.current.style.transform = `matrix(${matrix.join(
-                    ','
-                  )})`
+                  let matrix: Array<Number> | undefined =
+                    MoveToolOverlay.PolyLineRef.current.style.transform
+                      .match(numberPattern)
+                      ?.map(Number)
+
+                  if (matrix && matrix.length > 5) {
+                    matrix[4] =
+                      Number(e.clientX) -
+                      Number(offsetX) -
+                      Number(oldLeft) +
+                      Number(matrix[4])
+                    matrix[5] =
+                      Number(e.clientY) -
+                      Number(offsetY) -
+                      Number(oldTop) +
+                      Number(matrix[5])
+                    MoveToolOverlay.PolyLineRef.current.style.transform = `matrix(${matrix.join(
+                      ','
+                    )})`
+                  }
                 }
               }
             }
           }}
-          onPointerUp={(e: React.MouseEvent) => {
+          onPointerUp={() => {
             setIsMoving(false)
             console.log('is moving deactivated')
           }}
