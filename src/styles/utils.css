@@ -68,8 +68,9 @@
 }
 
 .palette {
-  margin: 0;
-  height: var(--palette-height);
+  margin: 0 0 0.5em;
+  /* height: var(--palette-height); */
+  z-index: 100;
 }
 
 .rounded-1 {
@@ -84,7 +85,7 @@
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  border: solid 1px rgb(211, 211, 211);
+  border: solid 1px rgb(0, 0, 0);
 }
 
 .text-center {
