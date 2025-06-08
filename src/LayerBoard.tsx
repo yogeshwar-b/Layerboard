@@ -10,12 +10,13 @@ function LayerBoard() {
   const ToolRef = useRef<Tools>(Tools.Brush)
   const CanvasContainerRef = useRef<CanvasHandle>(null)
   const ActiveLayer = useRef<number>(1)
+  const ColorRef= useRef<`#${string}`>('#000000')
 
   return (
     <div className='height-max'>
       <div className='flex-col pos-abs height-max flex-col-center'>
         <Toolbox
-          className='rounded-1 m-1 p-1 shadow-1 border-small flex-col flex-center'
+          className='rounded-1 m-1 p-1  border-small flex-col flex-center'
           ToolRef={ToolRef}
         />
       </div>
@@ -26,16 +27,17 @@ function LayerBoard() {
         /> */}
       <div className='flex-col pos-abs height-max flex-col-center pos-right'>
         <LayersPanel
-          className='rounded-1 m-1 p-1 shadow-1 border-small pos-abs pos-right pos-top'
+          className='rounded-1 m-1 p-1 border-small pos-abs pos-right pos-top'
           CanvasContainerRef={CanvasContainerRef}
           ActiveLayer={ActiveLayer}
         />
       </div>
-      <ColorPalette className='palette rounded-1 m-1 p-1 shadow-1 border-small pos-bottom pos-abs width-max' />
+      <ColorPalette colorState={ColorRef}  className='palette rounded-1 m-1 p-1  border-small pos-bottom pos-abs width-max' />
       <CanvasContainer
         ref={CanvasContainerRef}
         ToolRef={ToolRef}
         ActiveLayer={ActiveLayer}
+        ColorRef={ColorRef}
       />
     </div>
   )

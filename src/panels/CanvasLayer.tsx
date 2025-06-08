@@ -10,13 +10,14 @@ interface CanvasLayerProps {
   canvasId: string
   ToolRef: React.MutableRefObject<Tools>
   className: string
+  colorRef: React.MutableRefObject<`#${string}`>
 }
 interface MoveToolOverlay {
   ShowMoveToolOverlay: boolean
   PolyLineRef: RefObject<SVGPolylineElement> | null
   name: string
 }
-export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
+export const CanvasLayer = ({ canvasId, ToolRef,colorRef }: CanvasLayerProps) => {
   const ActivePolyLineRef = useRef<RefObject<SVGPolylineElement> | null>(null)
   const [PolyLineList, changePolyLineList] = useState<Array<ReactNode>>([])
   const isToolActive = useRef<boolean>(false)
@@ -146,6 +147,7 @@ export const CanvasLayer = ({ canvasId, ToolRef }: CanvasLayerProps) => {
             name={String(PolyLineList.length)}
             //These are the line components so the key will never be used and does not matter
             key={PolyLineList.length + 1}
+            colorRef={colorRef}
           />
         )
 
@@ -185,6 +187,7 @@ interface PolyLineSVGProps {
   name: string
   changeMoveToolOverlay: React.Dispatch<React.SetStateAction<MoveToolOverlay>>
   ActivePolyLineRef: MutableRefObject<RefObject<SVGPolylineElement> | null>
+  colorRef: React.MutableRefObject<`#${string}`>
 }
 const PolyLineSVG = ({
   points,
@@ -192,7 +195,8 @@ const PolyLineSVG = ({
   isToolActive,
   name,
   changeMoveToolOverlay,
-  ActivePolyLineRef
+  ActivePolyLineRef,
+  colorRef
 }: PolyLineSVGProps) => {
   const newPolyLineRef = useRef<SVGPolylineElement>(null)
   // PolylinesRef.current = [...PolylinesRef.current, newPolyLineRef]
@@ -214,7 +218,8 @@ const PolyLineSVG = ({
           points={points}
           className='poly-line'
           ref={newPolyLineRef}
-          style={{ transform: 'matrix(1, 0, 0, 1, 0, 0)' }}
+  
+          style={{ transform: 'matrix(1, 0, 0, 1, 0, 0)', stroke: colorRef.current }}
           name={name}
           onPointerDown={() => {
             //True if Tool is not None
