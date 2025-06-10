@@ -6,7 +6,7 @@ input[type='radio']:checked + .icon {
 }
 
 .tool-box {
-  position: absolute;
+  
   width: 5rem;
   z-index: 110;
 }

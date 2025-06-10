@@ -1,19 +1,19 @@
 import { forwardRef, useImperativeHandle, useReducer } from 'react'
-import { Tools } from '../enums/tools'
+// import { Tools } from '../enums/tools'
 import '../styles/utils.css'
 import { CanvasLayer } from './CanvasLayer'
+import { ToolProperties } from './Toolbox'
 
 export interface CanvasHandle {
   CanvasAdd: (name: string) => void
   CanvasDel: (name: string) => void
 }
 interface CanvasContainerProps {
-  ToolRef: React.MutableRefObject<Tools>
   ActiveLayer: React.MutableRefObject<number>
-  ColorRef: React.MutableRefObject<`#${string}`>
+  ToolPropertiesRef: React.MutableRefObject<ToolProperties>
 }
 export const CanvasContainer = forwardRef(
-  ({ ToolRef,ColorRef }: CanvasContainerProps, ref) => {
+  ({ ToolPropertiesRef }: CanvasContainerProps, ref) => {
     const [CanvasList, dispatch] = useReducer(CanvasReducer, ['1'])
     useImperativeHandle(ref, () => ({
       test() {
@@ -43,9 +43,7 @@ export const CanvasContainer = forwardRef(
               className='top-left pos-abs'
               canvasId={c}
               key={c}
-              ToolRef={ToolRef}
-              colorRef={ColorRef}
-              // ActiveLayer={ActiveLayer}
+              ToolPropertiesRef={ToolPropertiesRef}
             />
           )
         })}
