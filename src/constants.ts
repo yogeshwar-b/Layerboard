@@ -12,21 +12,21 @@ interface ToolButton {
 
 export const toolbuttons: ToolButton[] = [
   {
-    name: 'mouse',
+    name: 'Select',
     iconPath: mousearrowIcon,
     toolNum: Tools.None
   },
   {
-    name: 'brush',
+    name: 'Brush',
     iconPath: brushIcon,
     toolNum: Tools.Brush
   },
   {
-    name: 'eraser',
+    name: 'Eraser',
     iconPath: eraserIcon,
     toolNum: Tools.Eraser
   },
-  { name: 'move', iconPath: moveIcon, toolNum: Tools.Move }
+  { name: 'Move', iconPath: moveIcon, toolNum: Tools.Move }
 ]
 
 export const CanvasIdPrefix: string = 'CanvasLayer'

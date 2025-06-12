@@ -8,7 +8,7 @@ interface LayerButtonProps {
 
 export const LayerButton = (props: LayerButtonProps) => {
   return (
-    <div className='border-small flex-row'>
+    <div className=' flex-row'>
       <input
         onClick={() => {
           props.onChecked(props.name)
@@ -22,7 +22,7 @@ export const LayerButton = (props: LayerButtonProps) => {
         htmlFor={props.name + 'radio'}
         style={{ flex: 1, textAlign: 'center' }}
       >
-        {props.name} Layer
+        Layer {props.name}
       </label>
     </div>
   )

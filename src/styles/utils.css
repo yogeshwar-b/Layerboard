@@ -99,3 +99,20 @@
 .topmost-layer {
   z-index: 99;
 }
+
+.flat-button {
+  background-color: transparent;
+  border: 0.1px solid;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  padding: 0.1em 0.8em;
+  margin: 0.1em;
+}
+
+.flat-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.flat-button:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}

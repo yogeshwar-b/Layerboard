@@ -2,9 +2,11 @@ input[type='radio']:checked + .icon {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  border: solid 2px rgb(0, 0, 0);
+  border: solid 4px rgb(0, 0, 0);
 }
-
+.icon {
+  padding: 0.3em 0.4em;
+}
 .tool-box {
   position: absolute;
   width: 5rem;

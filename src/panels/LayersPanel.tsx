@@ -34,9 +34,10 @@ export const LayersPanel = ({
 
   return (
     <div className={className + ' layer-panel'} ref={layerPanelRef}>
-      <div>LayersPanel</div>
+      <div>Layers</div>
       <div className=''>
         <button
+          className='flat-button'
           onClick={() => {
             if (CanvasContainerRef?.current)
               CanvasContainerRef.current.CanvasAdd(
@@ -52,16 +53,17 @@ export const LayersPanel = ({
             dispatch({ type: 'Add', activeLayer: ActiveLayer })
           }}
         >
-          Add Layer +
+          +
         </button>
         <button
+          className='flat-button'
           onClick={() => {
             dispatch({ type: 'Delete', activeLayer: ActiveLayer })
             if (CanvasContainerRef?.current)
               CanvasContainerRef.current.CanvasDel(String(ActiveLayer.current))
           }}
         >
-          Delete Layer -
+          -
         </button>
       </div>
       {layerButtons.map((i) => {
