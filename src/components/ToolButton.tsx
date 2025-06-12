@@ -26,7 +26,7 @@ export const ToolButton = (props: ToolButtonProps) => {
         }}
         checked={props.toolState == props.toolNum}
       />
-      <img src={props.iconpath} alt='some icon' className='icon' />
+      <img src={props.iconpath} alt='some icon' className='flat-button icon' />
     </label>
   )
 }

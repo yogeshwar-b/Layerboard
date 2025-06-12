@@ -56,7 +56,7 @@ export const Toolbox = (props: ToolboxProps) => {
       {toolbuttons.map((t) => {
         return (
           <ToolButton
-            name='toolbar'
+            name={t.name}
             id={t.name}
             iconpath={t.iconPath}
             toolNum={t.toolNum}
