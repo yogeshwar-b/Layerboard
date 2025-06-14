@@ -56,24 +56,32 @@ export const Toolbox = (props: ToolboxProps) => {
     changeToolState(x)
   }
   return (
-        <div className='flex-col '>
-    <div className={props.className + ' tool-box'}>
-      <div>Toolbox</div>
-      {toolbuttons.map((t) => {
-        return (
-          <ToolButton
-            name={t.name}
-            id={t.name}
-            iconpath={t.iconPath}
-            toolNum={t.toolNum}
-            changeToolState={changeToolState1}
-            toolState={ToolState}
-            key={t.name}
-          ></ToolButton>
-        )
-      })}
-            {ToolState === Tools.Brush ? <div> brush adjustment</div> : <></>}
-    </div>
+    <div className='flex-col '>
+      <div className={props.className + ' tool-box'}>
+        <div>Toolbox</div>
+        {toolbuttons.map((t) => {
+          return (
+            <ToolButton
+              name={t.name}
+              id={t.name}
+              iconpath={t.iconPath}
+              toolNum={t.toolNum}
+              changeToolState={changeToolState1}
+              toolState={ToolState}
+              key={t.name}
+            ></ToolButton>
+          )
+        })}
+        {ToolState === Tools.Brush ? 
+        <input type="range" name="brushSize" id="brushSize" className="brush-size-slider" 
+        onInput={(e) => {
+          props.ToolPropertiesRef.current.size = parseInt(
+            (e.target as HTMLInputElement).value
+          )
+        }}
+        defaultValue={props.ToolPropertiesRef.current.size || 5} min={1} max={25}
+        /> : <></>}
+      </div>
     </div>
   )
 }

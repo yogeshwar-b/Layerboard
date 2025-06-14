@@ -217,7 +217,7 @@ const PolyLineSVG = ({
           className='poly-line'
           ref={newPolyLineRef}
   
-          style={{ transform: 'matrix(1, 0, 0, 1, 0, 0)', stroke: ToolPropertiesRef.current.color }}
+          style={{ transform: 'matrix(1, 0, 0, 1, 0, 0)', stroke: ToolPropertiesRef.current.color ,strokeWidth: ToolPropertiesRef.current.size }}
           name={name}
           onPointerDown={() => {
             //True if Tool is not None
