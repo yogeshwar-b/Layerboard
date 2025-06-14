@@ -56,24 +56,24 @@ export const Toolbox = (props: ToolboxProps) => {
     changeToolState(x)
   }
   return (
-    <div className='flex-col '>
-      <div className={props.className + ' tool-box'}>
-        <div>Toolbox</div>
-        {toolbuttons.map((t) => {
-          return (
-            <ToolButton
-              name='toolbar'
-              id={t.name}
-              iconpath={t.iconPath}
-              toolNum={t.toolNum}
-              changeToolState={changeToolState1}
-              toolState={ToolState}
-              key={t.name}
-            ></ToolButton>
-          )
-        })}
-      </div>
-      {ToolState === Tools.Brush ? <div> brush adjustment</div> : <></>}
+        <div className='flex-col '>
+    <div className={props.className + ' tool-box'}>
+      <div>Toolbox</div>
+      {toolbuttons.map((t) => {
+        return (
+          <ToolButton
+            name={t.name}
+            id={t.name}
+            iconpath={t.iconPath}
+            toolNum={t.toolNum}
+            changeToolState={changeToolState1}
+            toolState={ToolState}
+            key={t.name}
+          ></ToolButton>
+        )
+      })}
+            {ToolState === Tools.Brush ? <div> brush adjustment</div> : <></>}
+    </div>
     </div>
   )
 }
