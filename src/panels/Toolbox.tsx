@@ -6,16 +6,21 @@ import '../styles/toolbox.css'
 
 interface ToolboxProps {
   className: string
-  ToolRef: React.MutableRefObject<Tools>
+  ToolPropertiesRef: React.MutableRefObject<ToolProperties>
+}
+export interface ToolProperties {
+  tool: Tools
+  color?: `#${string}`
+  size?: number
 }
 //@todo - remove button
 export const Toolbox = (props: ToolboxProps) => {
   const [ToolState, changeToolState]: [Tools, Dispatch<SetStateAction<Tools>>] =
-    useState<Tools>(props.ToolRef.current)
+    useState<Tools>(props.ToolPropertiesRef.current.tool)
 
   function changeToolState1(x: Tools) {
     const canvaselement = document.getElementById('canvas-id')
-    switch (props.ToolRef.current) {
+    switch (props.ToolPropertiesRef.current.tool) {
       case Tools.None:
         canvaselement?.classList.remove('none-hover')
         break
@@ -31,8 +36,8 @@ export const Toolbox = (props: ToolboxProps) => {
       default:
         break
     }
-    props.ToolRef.current = x
-    switch (props.ToolRef.current) {
+    props.ToolPropertiesRef.current.tool = x
+    switch (props.ToolPropertiesRef.current.tool) {
       case Tools.None:
         canvaselement?.classList.add('none-hover')
         break
@@ -51,21 +56,32 @@ export const Toolbox = (props: ToolboxProps) => {
     changeToolState(x)
   }
   return (
-    <div className={props.className + ' tool-box'}>
-      <div>Toolbox</div>
-      {toolbuttons.map((t) => {
-        return (
-          <ToolButton
-            name={t.name}
-            id={t.name}
-            iconpath={t.iconPath}
-            toolNum={t.toolNum}
-            changeToolState={changeToolState1}
-            toolState={ToolState}
-            key={t.name}
-          ></ToolButton>
-        )
-      })}
+    <div className='flex-col '>
+      <div className={props.className + ' tool-box'}>
+        <div>Toolbox</div>
+        {toolbuttons.map((t) => {
+          return (
+            <ToolButton
+              name={t.name}
+              id={t.name}
+              iconpath={t.iconPath}
+              toolNum={t.toolNum}
+              changeToolState={changeToolState1}
+              toolState={ToolState}
+              key={t.name}
+            ></ToolButton>
+          )
+        })}
+        {ToolState === Tools.Brush ? 
+        <input type="range" name="brushSize" id="brushSize" className="brush-size-slider" 
+        onInput={(e) => {
+          props.ToolPropertiesRef.current.size = parseInt(
+            (e.target as HTMLInputElement).value
+          )
+        }}
+        defaultValue={props.ToolPropertiesRef.current.size || 5} min={1} max={25}
+        /> : <></>}
+      </div>
     </div>
   )
 }

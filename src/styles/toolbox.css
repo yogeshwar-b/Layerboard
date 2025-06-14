@@ -8,7 +8,12 @@ input[type='radio']:checked + .icon {
   padding: 0.3em 0.4em;
 }
 .tool-box {
-  position: absolute;
+  
   width: 5rem;
   z-index: 110;
+}
+
+.brush-size-slider{
+  width: 100%;
+  margin: 0.5em 0;
 }

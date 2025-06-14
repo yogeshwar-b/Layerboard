@@ -5,20 +5,25 @@ import { Toolbox } from './panels/Toolbox'
 import './styles/utils.css'
 import { Tools } from './enums/tools'
 import { CanvasContainer, CanvasHandle } from './panels/CanvasContainer'
+import { ToolProperties } from './panels/Toolbox'
+
 
 function LayerBoard() {
-  const ToolRef = useRef<Tools>(Tools.Brush)
+  const ToolPropertiesRef = useRef<ToolProperties>({
+    tool: Tools.Brush,
+    color: '#000000',
+    size: 5
+  })
   const CanvasContainerRef = useRef<CanvasHandle>(null)
   const ActiveLayer = useRef<number>(1)
-  const ColorRef= useRef<`#${string}`>('#000000')
 
   return (
     <div className='height-max'>
       <div className='flex-col pos-abs height-max flex-col-center'>
-        <Toolbox
-          className='rounded-1 m-1 p-1  border-small flex-col flex-center'
-          ToolRef={ToolRef}
-        />
+          <Toolbox
+            className='rounded-1 m-1 p-1  border-small flex-col flex-center '
+            ToolPropertiesRef={ToolPropertiesRef}
+          />
       </div>
       {/* <Board
           className='flex-grow height-auto rounded-1 m-1 p-1 shadow-1 border-small board'
@@ -32,12 +37,11 @@ function LayerBoard() {
           ActiveLayer={ActiveLayer}
         />
       </div>
-      <ColorPalette colorState={ColorRef}  className='palette rounded-1 m-1 p-1  border-small pos-bottom pos-abs width-max' />
+      <ColorPalette ToolPropertiesRef={ToolPropertiesRef}  className='palette rounded-1 m-1 p-1  border-small pos-bottom pos-abs width-max' />
       <CanvasContainer
         ref={CanvasContainerRef}
-        ToolRef={ToolRef}
+        ToolPropertiesRef={ToolPropertiesRef}
         ActiveLayer={ActiveLayer}
-        ColorRef={ColorRef}
       />
     </div>
   )
