@@ -19,13 +19,14 @@ export const LayersPanel = ({
   const [layerButtons, dispatch]: [number[], React.Dispatch<action>] =
     useReducer(layerButtonsReducer, [1])
   const layerPanelRef = useRef<HTMLDivElement>(null)
-  function handleChange(i: string) {
+  function setActiveLayer(i: string) {
+    ActiveLayer.current = Number(i)
+  }
+
+  function setTopMostLayer() {
     document
       .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
       ?.classList.remove('topmost-layer')
-
-    ActiveLayer.current = Number(i)
-    console.log('Active Layer is- ' + i)
 
     document
       .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
@@ -45,11 +46,13 @@ export const LayersPanel = ({
                   layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : '1'
                 )
               )
-            handleChange(
+            setActiveLayer(
               String(
                 layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : '1'
               )
             )
+
+            setTopMostLayer()
             dispatch({ type: 'Add', activeLayer: ActiveLayer })
           }}
         >
@@ -71,7 +74,7 @@ export const LayersPanel = ({
           <LayerButton
             key={String(i)}
             name={String(i)}
-            onChecked={handleChange}
+            onChecked={setActiveLayer}
             ActiveLayer={ActiveLayer}
           />
         )
