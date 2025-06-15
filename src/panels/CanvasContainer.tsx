@@ -36,7 +36,7 @@ export const CanvasContainer = forwardRef(
       }
     }))
     return (
-      <div className='top-left pos-abs height-max width-max'>
+      <div className='top-left pos-abs height-max width-max canvas-container'>
         {CanvasList.map((c: string) => {
           return (
             <CanvasLayer

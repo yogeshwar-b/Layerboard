@@ -116,3 +116,7 @@
 .flat-button:active {
   background-color: rgba(0, 0, 0, 0.2);
 }
+
+.canvas-container:hover {
+  cursor: var(--mouse-cursor, crosshair);
+}
