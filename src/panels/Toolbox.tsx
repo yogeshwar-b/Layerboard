@@ -19,40 +19,34 @@ export const Toolbox = (props: ToolboxProps) => {
     useState<Tools>(props.ToolPropertiesRef.current.tool)
 
   function changeToolState1(x: Tools) {
-    const canvaselement = document.getElementById('canvas-id')
-    switch (props.ToolPropertiesRef.current.tool) {
+    const r = document.querySelector(':root') as HTMLElement | null
+
+    switch (x) {
       case Tools.None:
-        canvaselement?.classList.remove('none-hover')
+        r?.style.setProperty(
+          '--mouse-cursor',
+          "url('/Layerboard/icons/mousearrow.svg'), default"
+        )
         break
       case Tools.Brush:
-        canvaselement?.classList.remove('brush-hover')
+        r?.style.setProperty('--mouse-cursor', 'crosshair')
         break
       case Tools.Eraser:
-        canvaselement?.classList.remove('eraser-hover')
+        r?.style.setProperty(
+          '--mouse-cursor',
+          "url('/Layerboard/icons/eraser.svg'), cell"
+        )
         break
       case Tools.Move:
-        canvaselement?.classList.remove('move-hover')
+        r?.style.setProperty(
+          '--mouse-cursor',
+          "url('/Layerboard/icons/move.svg'), all-scroll"
+        )
         break
       default:
         break
     }
     props.ToolPropertiesRef.current.tool = x
-    switch (props.ToolPropertiesRef.current.tool) {
-      case Tools.None:
-        canvaselement?.classList.add('none-hover')
-        break
-      case Tools.Brush:
-        canvaselement?.classList.add('brush-hover')
-        break
-      case Tools.Eraser:
-        canvaselement?.classList.add('eraser-hover')
-        break
-      case Tools.Move:
-        canvaselement?.classList.add('move-hover')
-        break
-      default:
-        break
-    }
     changeToolState(x)
   }
   return (
@@ -72,15 +66,24 @@ export const Toolbox = (props: ToolboxProps) => {
             ></ToolButton>
           )
         })}
-        {ToolState === Tools.Brush ? 
-        <input type="range" name="brushSize" id="brushSize" className="brush-size-slider" 
-        onInput={(e) => {
-          props.ToolPropertiesRef.current.size = parseInt(
-            (e.target as HTMLInputElement).value
-          )
-        }}
-        defaultValue={props.ToolPropertiesRef.current.size || 5} min={1} max={25}
-        /> : <></>}
+        {ToolState === Tools.Brush ? (
+          <input
+            type='range'
+            name='brushSize'
+            id='brushSize'
+            className='brush-size-slider'
+            onInput={(e) => {
+              props.ToolPropertiesRef.current.size = parseInt(
+                (e.target as HTMLInputElement).value
+              )
+            }}
+            defaultValue={props.ToolPropertiesRef.current.size || 5}
+            min={1}
+            max={25}
+          />
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   )
