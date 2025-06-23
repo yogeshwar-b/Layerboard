@@ -4,7 +4,7 @@ interface LayerButtonProps {
   name: string
   onChecked: (x: string) => void
   ActiveLayer: React.MutableRefObject<string>
-  order: number 
+  order: number
   id: string
 }
 
@@ -20,10 +20,7 @@ export const LayerButton = (props: LayerButtonProps) => {
         name={'layer-select'}
         defaultChecked={props.ActiveLayer.current === props.id}
       />
-      <label
-        htmlFor={props.id}
-        style={{ flex: 1, textAlign: 'center' }}
-      >
+      <label htmlFor={props.id} style={{ flex: 1, textAlign: 'center' }}>
         {props.name}
       </label>
     </div>

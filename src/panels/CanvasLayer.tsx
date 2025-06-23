@@ -17,7 +17,10 @@ interface MoveToolOverlay {
   PolyLineRef: RefObject<SVGPolylineElement> | null
   name: string
 }
-export const CanvasLayer = ({ canvasId, ToolPropertiesRef }: CanvasLayerProps) => {
+export const CanvasLayer = ({
+  canvasId,
+  ToolPropertiesRef
+}: CanvasLayerProps) => {
   const ActivePolyLineRef = useRef<RefObject<SVGPolylineElement> | null>(null)
   const [PolyLineList, changePolyLineList] = useState<Array<ReactNode>>([])
   const isToolActive = useRef<boolean>(false)
@@ -72,7 +75,10 @@ export const CanvasLayer = ({ canvasId, ToolPropertiesRef }: CanvasLayerProps) =
             }
           }}
           onPointerMove={(e: React.MouseEvent) => {
-            if (ToolPropertiesRef.current.tool == Tools.Move && isMoving.current) {
+            if (
+              ToolPropertiesRef.current.tool == Tools.Move &&
+              isMoving.current
+            ) {
               {
                 const draggableDiv: HTMLDivElement = e.target as HTMLDivElement
                 let oldLeft: Number = Number(
@@ -193,8 +199,7 @@ const PolyLineSVG = ({
   isToolActive,
   name,
   changeMoveToolOverlay,
-  ActivePolyLineRef,
-  
+  ActivePolyLineRef
 }: PolyLineSVGProps) => {
   const newPolyLineRef = useRef<SVGPolylineElement>(null)
   // PolylinesRef.current = [...PolylinesRef.current, newPolyLineRef]
@@ -205,7 +210,10 @@ const PolyLineSVG = ({
       width={'100%'}
       style={{ position: 'absolute', pointerEvents: 'none' }}
       onPointerMove={(e: React.MouseEvent) => {
-        if (isToolActive.current && ToolPropertiesRef.current.tool == Tools.Eraser) {
+        if (
+          isToolActive.current &&
+          ToolPropertiesRef.current.tool == Tools.Eraser
+        ) {
           ;(e.target as SVGPolylineElement).points.clear()
         }
       }}
@@ -216,8 +224,11 @@ const PolyLineSVG = ({
           points={points}
           className='poly-line'
           ref={newPolyLineRef}
-  
-          style={{ transform: 'matrix(1, 0, 0, 1, 0, 0)', stroke: ToolPropertiesRef.current.color ,strokeWidth: ToolPropertiesRef.current.size }}
+          style={{
+            transform: 'matrix(1, 0, 0, 1, 0, 0)',
+            stroke: ToolPropertiesRef.current.color,
+            strokeWidth: ToolPropertiesRef.current.size
+          }}
           name={name}
           onPointerDown={() => {
             //True if Tool is not None
