@@ -8,7 +8,13 @@ import { CanvasIdPrefix } from '../constants'
 interface LayersPanelProps {
   className: string
   CanvasContainerRef: React.RefObject<CanvasHandle>
-  ActiveLayer: React.MutableRefObject<number>
+  ActiveLayer: React.MutableRefObject<string>
+}
+interface LayerState{
+  name: string
+  id: string
+  order: number
+  checked: boolean
 }
 
 export const LayersPanel = ({
@@ -16,22 +22,19 @@ export const LayersPanel = ({
   ActiveLayer,
   CanvasContainerRef
 }: LayersPanelProps) => {
-  const [layerButtons, dispatch]: [number[], React.Dispatch<action>] =
-    useReducer(layerButtonsReducer, [1])
+  const [layerStates, dispatch]: [Array<LayerState>, React.Dispatch<action>] =
+    useReducer(layerButtonsReducer, [{ name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }])
   const layerPanelRef = useRef<HTMLDivElement>(null)
-  function setActiveLayer(i: string) {
-    ActiveLayer.current = Number(i)
+  function setActiveLayer(currLayer: string) {
+    let prevlayer=document
+      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
+    if(prevlayer)prevlayer.style.pointerEvents = 'none'
+    ActiveLayer.current = currLayer
+    let newlayer=document
+      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
+    if(newlayer)newlayer.style.pointerEvents = 'auto'
   }
 
-  function setTopMostLayer() {
-    document
-      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
-      ?.classList.remove('topmost-layer')
-
-    document
-      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
-      ?.classList.add('topmost-layer')
-  }
 
   return (
     <div className={className + ' layer-panel'} ref={layerPanelRef}>
@@ -40,20 +43,16 @@ export const LayersPanel = ({
         <button
           className='flat-button'
           onClick={() => {
+            let layername= 'Layer ' + (layerStates.length + 1)
+            let layerId = crypto.randomUUID()
             if (CanvasContainerRef?.current)
               CanvasContainerRef.current.CanvasAdd(
-                String(
-                  layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : '1'
-                )
+                layerId
               )
+            dispatch({ type: 'Add', activeLayer: ActiveLayer,name: layername, id: layerId})
             setActiveLayer(
-              String(
-                layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : '1'
-              )
+              layerId
             )
-
-            setTopMostLayer()
-            dispatch({ type: 'Add', activeLayer: ActiveLayer })
           }}
         >
           +
@@ -61,7 +60,8 @@ export const LayersPanel = ({
         <button
           className='flat-button'
           onClick={() => {
-            dispatch({ type: 'Delete', activeLayer: ActiveLayer })
+            console.log('on click deleting  ' + ActiveLayer.current + ' in layer panel')
+            dispatch({ type: 'Delete', activeLayer: ActiveLayer , id: ActiveLayer.current })
             if (CanvasContainerRef?.current)
               CanvasContainerRef.current.CanvasDel(String(ActiveLayer.current))
           }}
@@ -69,13 +69,15 @@ export const LayersPanel = ({
           -
         </button>
       </div>
-      {layerButtons.map((i) => {
+      {layerStates.map((i) => {
         return (
           <LayerButton
-            key={String(i)}
-            name={String(i)}
+            key={i.order}
+            name={i.name}
+            id={i.id}
             onChecked={setActiveLayer}
             ActiveLayer={ActiveLayer}
+            order={i.order}
           />
         )
       })}
@@ -85,22 +87,24 @@ export const LayersPanel = ({
 
 interface action {
   type: string
-  activeLayer: React.MutableRefObject<number>
+  activeLayer: React.MutableRefObject<string>
+  name?: string
+  id: string
 }
 
-function layerButtonsReducer(layerButtons: number[], action: action) {
+function layerButtonsReducer(layerStates: Array<LayerState>, action: action) {
   switch (action.type) {
     case 'Add':
       return [
-        ...layerButtons,
-        layerButtons.length > 0 ? Math.max(...layerButtons) + 1 : 1
+        ...layerStates,
+        { name: action.name ?? `Layer ${layerStates.length + 1}`, id: action.id, order: layerStates.length, checked: false }
       ]
     case 'Delete':
-      console.log('deleting ' + action.activeLayer.current + ' in layer panel')
-      return layerButtons.filter((x) => {
-        if (x != action.activeLayer.current) return x
+      console.log('deleting ' + action.id + ' in layer panel')
+      return layerStates.filter((x) => {
+        if (x.id != action.id) return x
       })
     default:
-      return layerButtons
+      return layerStates
   }
 }

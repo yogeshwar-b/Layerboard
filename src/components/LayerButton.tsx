@@ -3,7 +3,9 @@ import '../styles/utils.css'
 interface LayerButtonProps {
   name: string
   onChecked: (x: string) => void
-  ActiveLayer: React.MutableRefObject<number>
+  ActiveLayer: React.MutableRefObject<string>
+  order: number 
+  id: string
 }
 
 export const LayerButton = (props: LayerButtonProps) => {
@@ -11,18 +13,18 @@ export const LayerButton = (props: LayerButtonProps) => {
     <div className=' flex-row'>
       <input
         onClick={() => {
-          props.onChecked(props.name)
+          props.onChecked(props.id)
         }}
         type='radio'
-        id={props.name + 'radio'}
-        name='test'
-        defaultChecked={String(props.ActiveLayer.current) == props.name}
+        id={props.id}
+        name={'layer-select'}
+        defaultChecked={props.ActiveLayer.current === props.id}
       />
       <label
-        htmlFor={props.name + 'radio'}
+        htmlFor={props.id}
         style={{ flex: 1, textAlign: 'center' }}
       >
-        Layer {props.name}
+        {props.name}
       </label>
     </div>
   )
