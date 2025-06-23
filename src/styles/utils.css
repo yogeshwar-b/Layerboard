@@ -96,9 +96,6 @@
   display: none;
 }
 
-.topmost-layer {
-  z-index: 99;
-}
 
 .flat-button {
   background-color: transparent;

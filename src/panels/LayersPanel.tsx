@@ -25,19 +25,16 @@ export const LayersPanel = ({
   const [layerStates, dispatch]: [Array<LayerState>, React.Dispatch<action>] =
     useReducer(layerButtonsReducer, [{ name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }])
   const layerPanelRef = useRef<HTMLDivElement>(null)
-  function setActiveLayer(i: string) {
-    ActiveLayer.current = i
+  function setActiveLayer(currLayer: string) {
+    let prevlayer=document
+      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
+    if(prevlayer)prevlayer.style.pointerEvents = 'none'
+    ActiveLayer.current = currLayer
+    let newlayer=document
+      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
+    if(newlayer)newlayer.style.pointerEvents = 'auto'
   }
 
-  function setTopMostLayer() {
-    document
-      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
-      ?.classList.remove('topmost-layer')
-
-    document
-      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
-      ?.classList.add('topmost-layer')
-  }
 
   return (
     <div className={className + ' layer-panel'} ref={layerPanelRef}>
@@ -52,12 +49,10 @@ export const LayersPanel = ({
               CanvasContainerRef.current.CanvasAdd(
                 layerId
               )
+            dispatch({ type: 'Add', activeLayer: ActiveLayer,name: layername, id: layerId})
             setActiveLayer(
               layerId
             )
-
-            setTopMostLayer()
-            dispatch({ type: 'Add', activeLayer: ActiveLayer,name: layername, id: layerId})
           }}
         >
           +
