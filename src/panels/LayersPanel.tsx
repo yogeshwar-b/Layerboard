@@ -1,4 +1,4 @@
-import { useReducer, useRef } from 'react'
+import { RefObject, useReducer, useRef } from 'react'
 import { LayerButton } from '../components/LayerButton'
 import '../styles/utils.css'
 import { CanvasHandle } from './CanvasContainer'
@@ -7,10 +7,10 @@ import { CanvasIdPrefix } from '../constants'
 
 interface LayersPanelProps {
   className: string
-  CanvasContainerRef: React.RefObject<CanvasHandle>
-  ActiveLayer: React.MutableRefObject<string>
+  CanvasContainerRef: RefObject<CanvasHandle | null>
+  ActiveLayer: RefObject<string>
 }
-interface LayerState{
+interface LayerState {
   name: string
   id: string
   order: number
@@ -23,18 +23,21 @@ export const LayersPanel = ({
   CanvasContainerRef
 }: LayersPanelProps) => {
   const [layerStates, dispatch]: [Array<LayerState>, React.Dispatch<action>] =
-    useReducer(layerButtonsReducer, [{ name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }])
+    useReducer(layerButtonsReducer, [
+      { name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }
+    ])
   const layerPanelRef = useRef<HTMLDivElement>(null)
   function setActiveLayer(currLayer: string) {
-    let prevlayer=document
-      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
-    if(prevlayer)prevlayer.style.pointerEvents = 'none'
+    let prevlayer = document.getElementById(
+      CanvasIdPrefix + String(ActiveLayer.current)
+    )
+    if (prevlayer) prevlayer.style.pointerEvents = 'none'
     ActiveLayer.current = currLayer
-    let newlayer=document
-      .getElementById(CanvasIdPrefix + String(ActiveLayer.current))
-    if(newlayer)newlayer.style.pointerEvents = 'auto'
+    let newlayer = document.getElementById(
+      CanvasIdPrefix + String(ActiveLayer.current)
+    )
+    if (newlayer) newlayer.style.pointerEvents = 'auto'
   }
-
 
   return (
     <div className={className + ' layer-panel'} ref={layerPanelRef}>
@@ -43,16 +46,17 @@ export const LayersPanel = ({
         <button
           className='flat-button'
           onClick={() => {
-            let layername= 'Layer ' + (layerStates.length + 1)
+            let layername = 'Layer ' + (layerStates.length + 1)
             let layerId = crypto.randomUUID()
             if (CanvasContainerRef?.current)
-              CanvasContainerRef.current.CanvasAdd(
-                layerId
-              )
-            dispatch({ type: 'Add', activeLayer: ActiveLayer,name: layername, id: layerId})
-            setActiveLayer(
-              layerId
-            )
+              CanvasContainerRef.current.CanvasAdd(layerId)
+            dispatch({
+              type: 'Add',
+              activeLayer: ActiveLayer,
+              name: layername,
+              id: layerId
+            })
+            setActiveLayer(layerId)
           }}
         >
           +
@@ -60,8 +64,14 @@ export const LayersPanel = ({
         <button
           className='flat-button'
           onClick={() => {
-            console.log('on click deleting  ' + ActiveLayer.current + ' in layer panel')
-            dispatch({ type: 'Delete', activeLayer: ActiveLayer , id: ActiveLayer.current })
+            console.log(
+              'on click deleting  ' + ActiveLayer.current + ' in layer panel'
+            )
+            dispatch({
+              type: 'Delete',
+              activeLayer: ActiveLayer,
+              id: ActiveLayer.current
+            })
             if (CanvasContainerRef?.current)
               CanvasContainerRef.current.CanvasDel(String(ActiveLayer.current))
           }}
@@ -87,7 +97,7 @@ export const LayersPanel = ({
 
 interface action {
   type: string
-  activeLayer: React.MutableRefObject<string>
+  activeLayer: React.RefObject<string>
   name?: string
   id: string
 }
@@ -97,7 +107,12 @@ function layerButtonsReducer(layerStates: Array<LayerState>, action: action) {
     case 'Add':
       return [
         ...layerStates,
-        { name: action.name ?? `Layer ${layerStates.length + 1}`, id: action.id, order: layerStates.length, checked: false }
+        {
+          name: action.name ?? `Layer ${layerStates.length + 1}`,
+          id: action.id,
+          order: layerStates.length,
+          checked: false
+        }
       ]
     case 'Delete':
       console.log('deleting ' + action.id + ' in layer panel')

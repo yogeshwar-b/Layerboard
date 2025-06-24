@@ -3,8 +3,8 @@ import { ToolProperties } from './Toolbox'
 
 interface ColorPaletteProps {
   className: string
-  // colorState: React.MutableRefObject<`#${string}`>
-  ToolPropertiesRef: React.MutableRefObject<ToolProperties>
+  // colorState: React.RefObject<`#${string}`>
+  ToolPropertiesRef: React.RefObject<ToolProperties>
 }
 
 export const ColorPalette = (props: ColorPaletteProps) => {
@@ -23,7 +23,7 @@ export const ColorPalette = (props: ColorPaletteProps) => {
     '#000080',
     '#808000',
     '#800080',
-    '#008080',
+    '#008080'
   ]
 
   const [colorState, setColorState] = useState<`#${string}`>(
@@ -45,12 +45,12 @@ export const ColorPalette = (props: ColorPaletteProps) => {
               cursor: 'pointer',
               borderRadius: '5px',
               boxShadow: '0 0 5px rgba(0,0,0,0.2)',
-              border: colorState === color ? '2px solid black' : 'none',
+              border: colorState === color ? '2px solid black' : 'none'
             }}
             onClick={() => {
               console.log(`Selected color: ${color}`)
-              props.ToolPropertiesRef.current.color = color as `#${string}` 
-              setColorState(color as `#${string}`) 
+              props.ToolPropertiesRef.current.color = color as `#${string}`
+              setColorState(color as `#${string}`)
             }}
           ></div>
         ))}

@@ -6,7 +6,7 @@ import '../styles/toolbox.css'
 
 interface ToolboxProps {
   className: string
-  ToolPropertiesRef: React.MutableRefObject<ToolProperties>
+  ToolPropertiesRef: React.RefObject<ToolProperties>
 }
 export interface ToolProperties {
   tool: Tools

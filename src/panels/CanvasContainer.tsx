@@ -9,12 +9,14 @@ export interface CanvasHandle {
   CanvasDel: (name: string) => void
 }
 interface CanvasContainerProps {
-  ActiveLayer: React.MutableRefObject<string>
-  ToolPropertiesRef: React.MutableRefObject<ToolProperties>
+  ActiveLayer: React.RefObject<string>
+  ToolPropertiesRef: React.RefObject<ToolProperties>
 }
 export const CanvasContainer = forwardRef(
-  ({ ToolPropertiesRef,ActiveLayer }: CanvasContainerProps, ref) => {
-    const [CanvasList, dispatch] = useReducer(CanvasReducer, [ActiveLayer.current])
+  ({ ToolPropertiesRef, ActiveLayer }: CanvasContainerProps, ref) => {
+    const [CanvasList, dispatch] = useReducer(CanvasReducer, [
+      ActiveLayer.current
+    ])
     useImperativeHandle(ref, () => ({
       test() {
         console.log('testcalled')
