@@ -16,17 +16,24 @@ interface LayerState {
   order: number
   checked: boolean
 }
+interface LayerOrder {
+  id: string
+  order: number
+}
 
 export const LayersPanel = ({
   className,
   ActiveLayer,
   CanvasContainerRef
 }: LayersPanelProps) => {
-  const [layerStates, dispatch]: [Array<LayerState>, React.Dispatch<action>] =
-    useReducer(layerButtonsReducer, [
-      { name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }
-    ])
+  const [layerStates, dispatch] = useReducer<
+    React.Reducer<LayerState[], action>
+  >(layerButtonsReducer, [
+    { name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }
+  ])
   const layerPanelRef = useRef<HTMLDivElement>(null)
+  const draggedLayer = useRef<string>('')
+  const draggedOverLayer = useRef<string>('')
   function setActiveLayer(currLayer: string) {
     let prevlayer = document.getElementById(
       CanvasIdPrefix + String(ActiveLayer.current)
@@ -37,6 +44,41 @@ export const LayersPanel = ({
       CanvasIdPrefix + String(ActiveLayer.current)
     )
     if (newlayer) newlayer.style.pointerEvents = 'auto'
+  }
+
+  const handleDragStart = (layerId: string) => {
+    draggedLayer.current = layerId
+  }
+
+  const handleDragEnter = (layerId: string) => {
+    draggedOverLayer.current = layerId
+  }
+
+  const handleDragEnd = () => {
+    console.log('dragging ended')
+    if (
+      draggedLayer.current !== '' &&
+      draggedOverLayer.current !== '' &&
+      draggedOverLayer.current !== draggedLayer.current
+    ) {
+      const fromIdx: number = layerStates.findIndex(
+        (x) => x.id === draggedLayer.current
+      )
+      const toIdx: number = layerStates.findIndex(
+        (x) => x.id === draggedOverLayer.current
+      )
+      dispatch({
+        type: 'DragAndDrop',
+        fromIdx: fromIdx,
+        toIdx: toIdx,
+        id: draggedLayer.current
+      })
+      draggedLayer.current = ''
+      draggedOverLayer.current = ''
+    }
+  }
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
   }
 
   return (
@@ -88,6 +130,10 @@ export const LayersPanel = ({
             onChecked={setActiveLayer}
             ActiveLayer={ActiveLayer}
             order={i.order}
+            handleDragStart={handleDragStart}
+            handleDragEnter={handleDragEnter}
+            handleDragEnd={handleDragEnd}
+            handleDragOver={handleDragOver}
           />
         )
       })}
@@ -95,11 +141,14 @@ export const LayersPanel = ({
   )
 }
 
+//@todo use typeguards here to ensure that the action is of type action
 interface action {
   type: string
-  activeLayer: React.MutableRefObject<string>
+  activeLayer?: React.MutableRefObject<string>
   name?: string
   id: string
+  fromIdx?: number
+  toIdx?: number
 }
 
 function layerButtonsReducer(layerStates: Array<LayerState>, action: action) {
@@ -119,6 +168,15 @@ function layerButtonsReducer(layerStates: Array<LayerState>, action: action) {
       return layerStates.filter((x) => {
         if (x.id != action.id) return x
       })
+    case 'DragAndDrop':
+      if (action.fromIdx !== undefined && action.toIdx !== undefined) {
+        const updatedItems = [...layerStates]
+        const [removed] = updatedItems.splice(action.fromIdx, 1)
+        updatedItems.splice(action.toIdx, 0, removed)
+        return updatedItems
+      } else {
+        return layerStates
+      }
     default:
       return layerStates
   }

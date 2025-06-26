@@ -6,11 +6,22 @@ interface LayerButtonProps {
   ActiveLayer: React.MutableRefObject<string>
   order: number
   id: string
+  handleDragStart: (layerId: string) => void
+  handleDragEnter: (layerId:string) => void
+  handleDragEnd: () => void
+  handleDragOver: (e: React.DragEvent<HTMLDivElement>) => void
+  
 }
 
 export const LayerButton = (props: LayerButtonProps) => {
   return (
-    <div className=' flex-row'>
+    <div className=' flex-row'
+    onDragStart={()=>props.handleDragStart(props.id)}
+    onDragEnter={()=>props.handleDragEnter(props.id)}
+    onDragEnd={props.handleDragEnd}
+    onDragOver={props.handleDragOver}
+    draggable='true'
+    >
       <input
         onClick={() => {
           props.onChecked(props.id)
