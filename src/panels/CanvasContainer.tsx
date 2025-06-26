@@ -7,6 +7,7 @@ import { ToolProperties } from './Toolbox'
 export interface CanvasHandle {
   CanvasAdd: (name: string) => void
   CanvasDel: (name: string) => void
+  CanvasSync: (layerState: string[]) => void
 }
 interface CanvasContainerProps {
   ActiveLayer: React.MutableRefObject<string>
@@ -35,6 +36,13 @@ export const CanvasContainer = forwardRef(
         } else {
           dispatch({ type: 'add', canvasName: name })
         }
+      },
+      CanvasSync(layerState: string[]) {
+        dispatch({
+          type: 'syncWithLayerPanel',
+          canvasName: '',
+          layerState: layerState
+        })
       }
     }))
     return (
@@ -57,6 +65,7 @@ export const CanvasContainer = forwardRef(
 interface action {
   type: string
   canvasName: string
+  layerState?: string[]
 }
 const CanvasReducer = (CanvasList: string[], action: action) => {
   switch (action.type) {
@@ -67,6 +76,9 @@ const CanvasReducer = (CanvasList: string[], action: action) => {
       return CanvasList.filter((c) => {
         if (c != action.canvasName) return c
       })
+    case 'syncWithLayerPanel':
+      return action.layerState ? action.layerState : CanvasList
+
     default:
       return CanvasList
   }

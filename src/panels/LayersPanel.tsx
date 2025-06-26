@@ -75,6 +75,9 @@ export const LayersPanel = ({
       })
       draggedLayer.current = ''
       draggedOverLayer.current = ''
+      if (CanvasContainerRef?.current) {
+        CanvasContainerRef.current.CanvasSync(layerStates.map((x) => x.id))
+      }
     }
   }
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
