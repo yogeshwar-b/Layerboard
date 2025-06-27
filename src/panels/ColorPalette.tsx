@@ -3,8 +3,8 @@ import { ToolProperties } from './Toolbox'
 
 interface ColorPaletteProps {
   className: string
-  // colorState: React.MutableRefObject<`#${string}`>
-  ToolPropertiesRef: React.MutableRefObject<ToolProperties>
+  // colorState: React.RefObject<`#${string}`>
+  ToolPropertiesRef: React.RefObject<ToolProperties>
 }
 
 export const ColorPalette = (props: ColorPaletteProps) => {

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { RefObject, useRef } from 'react'
 import { ColorPalette } from './panels/ColorPalette'
 import { LayersPanel } from './panels/LayersPanel'
 import { Toolbox } from './panels/Toolbox'
@@ -13,10 +13,9 @@ function LayerBoard() {
     color: '#000000',
     size: 5
   })
-  const CanvasContainerRef = useRef<CanvasHandle>(null)
-  const ActiveLayer: React.MutableRefObject<string> = useRef<string>(
-    crypto.randomUUID()
-  )
+  const CanvasContainerRef: RefObject<CanvasHandle | null> =
+    useRef<CanvasHandle>(null)
+  const ActiveLayer: RefObject<string> = useRef<string>(crypto.randomUUID())
 
   return (
     <div className='height-max'>

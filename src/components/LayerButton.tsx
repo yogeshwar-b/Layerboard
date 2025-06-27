@@ -3,24 +3,24 @@ import '../styles/utils.css'
 interface LayerButtonProps {
   name: string
   onChecked: (x: string) => void
-  ActiveLayer: React.MutableRefObject<string>
+  ActiveLayer: React.RefObject<string>
   order: number
   id: string
   handleDragStart: (layerId: string) => void
-  handleDragEnter: (layerId:string) => void
+  handleDragEnter: (layerId: string) => void
   handleDragEnd: () => void
   handleDragOver: (e: React.DragEvent<HTMLDivElement>) => void
-  
 }
 
 export const LayerButton = (props: LayerButtonProps) => {
   return (
-    <div className=' flex-row'
-    onDragStart={()=>props.handleDragStart(props.id)}
-    onDragEnter={()=>props.handleDragEnter(props.id)}
-    onDragEnd={props.handleDragEnd}
-    onDragOver={props.handleDragOver}
-    draggable='true'
+    <div
+      className=' flex-row'
+      onDragStart={() => props.handleDragStart(props.id)}
+      onDragEnter={() => props.handleDragEnter(props.id)}
+      onDragEnd={props.handleDragEnd}
+      onDragOver={props.handleDragOver}
+      draggable='true'
     >
       <input
         onClick={() => {

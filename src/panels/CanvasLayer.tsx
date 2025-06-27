@@ -1,4 +1,4 @@
-import { MutableRefObject, ReactNode, RefObject, useRef, useState } from 'react'
+import { ReactNode, RefObject, useRef, useState } from 'react'
 import { Tools } from '../enums/tools'
 import { CanvasIdPrefix } from '../constants'
 import '../styles/svg.css'
@@ -10,11 +10,11 @@ var offsetX = 0,
 interface CanvasLayerProps {
   canvasId: string
   className: string
-  ToolPropertiesRef: React.MutableRefObject<ToolProperties>
+  ToolPropertiesRef: React.RefObject<ToolProperties>
 }
 interface MoveToolOverlay {
   ShowMoveToolOverlay: boolean
-  PolyLineRef: RefObject<SVGPolylineElement> | null
+  PolyLineRef: RefObject<SVGPolylineElement | null> | null
   name: string
 }
 export const CanvasLayer = ({
@@ -187,11 +187,11 @@ export const CanvasLayer = ({
 
 interface PolyLineSVGProps {
   points: string
-  isToolActive: React.MutableRefObject<boolean>
+  isToolActive: React.RefObject<boolean>
   name: string
   changeMoveToolOverlay: React.Dispatch<React.SetStateAction<MoveToolOverlay>>
-  ActivePolyLineRef: MutableRefObject<RefObject<SVGPolylineElement> | null>
-  ToolPropertiesRef: React.MutableRefObject<ToolProperties>
+  ActivePolyLineRef: RefObject<RefObject<SVGPolylineElement | null> | null>
+  ToolPropertiesRef: React.RefObject<ToolProperties>
 }
 const PolyLineSVG = ({
   points,

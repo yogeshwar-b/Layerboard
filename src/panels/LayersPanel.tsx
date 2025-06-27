@@ -1,4 +1,4 @@
-import { useReducer, useRef } from 'react'
+import { RefObject, useReducer, useRef } from 'react'
 import { LayerButton } from '../components/LayerButton'
 import '../styles/utils.css'
 import { CanvasHandle } from './CanvasContainer'
@@ -7,8 +7,8 @@ import { CanvasIdPrefix } from '../constants'
 
 interface LayersPanelProps {
   className: string
-  CanvasContainerRef: React.RefObject<CanvasHandle>
-  ActiveLayer: React.MutableRefObject<string>
+  CanvasContainerRef: RefObject<CanvasHandle | null>
+  ActiveLayer: RefObject<string>
 }
 interface LayerState {
   name: string
@@ -147,7 +147,7 @@ export const LayersPanel = ({
 //@todo use typeguards here to ensure that the action is of type action
 interface action {
   type: string
-  activeLayer?: React.MutableRefObject<string>
+  activeLayer?: React.RefObject<string>
   name?: string
   id: string
   fromIdx?: number
