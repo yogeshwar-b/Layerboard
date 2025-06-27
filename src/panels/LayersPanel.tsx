@@ -16,19 +16,13 @@ interface LayerState {
   order: number
   checked: boolean
 }
-interface LayerOrder {
-  id: string
-  order: number
-}
 
 export const LayersPanel = ({
   className,
   ActiveLayer,
   CanvasContainerRef
 }: LayersPanelProps) => {
-  const [layerStates, dispatch] = useReducer<
-    React.Reducer<LayerState[], action>
-  >(layerButtonsReducer, [
+  const [layerStates, dispatch] = useReducer(layerButtonsReducer, [
     { name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }
   ])
   const layerPanelRef = useRef<HTMLDivElement>(null)
@@ -73,11 +67,11 @@ export const LayersPanel = ({
         toIdx: toIdx,
         id: draggedLayer.current
       })
+      if (CanvasContainerRef?.current) {
+        CanvasContainerRef.current.CanvasSync(fromIdx, toIdx)
+      }
       draggedLayer.current = ''
       draggedOverLayer.current = ''
-      if (CanvasContainerRef?.current) {
-        CanvasContainerRef.current.CanvasSync(layerStates.map((x) => x.id))
-      }
     }
   }
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -124,22 +118,24 @@ export const LayersPanel = ({
           -
         </button>
       </div>
-      {layerStates.map((i) => {
-        return (
-          <LayerButton
-            key={i.order}
-            name={i.name}
-            id={i.id}
-            onChecked={setActiveLayer}
-            ActiveLayer={ActiveLayer}
-            order={i.order}
-            handleDragStart={handleDragStart}
-            handleDragEnter={handleDragEnter}
-            handleDragEnd={handleDragEnd}
-            handleDragOver={handleDragOver}
-          />
-        )
-      })}
+      <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
+        {layerStates.map((i) => {
+          return (
+            <LayerButton
+              key={i.order}
+              name={i.name}
+              id={i.id}
+              onChecked={setActiveLayer}
+              ActiveLayer={ActiveLayer}
+              order={i.order}
+              handleDragStart={handleDragStart}
+              handleDragEnter={handleDragEnter}
+              handleDragEnd={handleDragEnd}
+              handleDragOver={handleDragOver}
+            />
+          )
+        })}
+      </div>
     </div>
   )
 }

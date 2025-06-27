@@ -7,7 +7,7 @@ import { ToolProperties } from './Toolbox'
 export interface CanvasHandle {
   CanvasAdd: (name: string) => void
   CanvasDel: (name: string) => void
-  CanvasSync: (layerState: string[]) => void
+  CanvasSync: (fromIdx: number, toIdx: number) => void
 }
 interface CanvasContainerProps {
   ActiveLayer: React.RefObject<string>
@@ -41,11 +41,12 @@ export const CanvasContainer = ({
         dispatch({ type: 'add', canvasName: name })
       }
     },
-    CanvasSync(layerState: string[]) {
+    CanvasSync(fromIdx: number, toIdx: number) {
       dispatch({
         type: 'syncWithLayerPanel',
         canvasName: '',
-        layerState: layerState
+        fromIdx: fromIdx,
+        toIdx: toIdx
       })
     }
   }))
@@ -69,6 +70,8 @@ interface action {
   type: string
   canvasName: string
   layerState?: string[]
+  fromIdx?: number
+  toIdx?: number
 }
 const CanvasReducer = (CanvasList: string[], action: action) => {
   switch (action.type) {
@@ -80,7 +83,14 @@ const CanvasReducer = (CanvasList: string[], action: action) => {
         if (c != action.canvasName) return c
       })
     case 'syncWithLayerPanel':
-      return action.layerState ? action.layerState : CanvasList
+      if (action.fromIdx !== undefined && action.toIdx !== undefined) {
+        const updatedItems = [...CanvasList]
+        const [removed] = updatedItems.splice(action.fromIdx, 1)
+        updatedItems.splice(action.toIdx, 0, removed)
+        return updatedItems
+      } else {
+        return CanvasList
+      }
 
     default:
       return CanvasList
