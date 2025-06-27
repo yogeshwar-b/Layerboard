@@ -16,19 +16,13 @@ interface LayerState {
   order: number
   checked: boolean
 }
-interface LayerOrder {
-  id: string
-  order: number
-}
 
 export const LayersPanel = ({
   className,
   ActiveLayer,
   CanvasContainerRef
 }: LayersPanelProps) => {
-  const [layerStates, dispatch] = useReducer<
-    React.Reducer<LayerState[], action>
-  >(layerButtonsReducer, [
+  const [layerStates, dispatch] = useReducer(layerButtonsReducer, [
     { name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }
   ])
   const layerPanelRef = useRef<HTMLDivElement>(null)
