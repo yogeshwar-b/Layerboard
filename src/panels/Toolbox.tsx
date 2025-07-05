@@ -50,7 +50,7 @@ export const Toolbox = (props: ToolboxProps) => {
     changeToolState(x)
   }
   return (
-    <div className='flex-col '>
+    <div className='flex flex-col '>
       <div className={props.className + ' tool-box'}>
         <div>Toolbox</div>
         {toolbuttons.map((t) => {

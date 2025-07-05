@@ -15,7 +15,7 @@ interface LayerButtonProps {
 export const LayerButton = (props: LayerButtonProps) => {
   return (
     <div
-      className=' flex-row'
+      className=' flex flex-row'
       onDragStart={() => props.handleDragStart(props.id)}
       onDragEnter={() => props.handleDragEnter(props.id)}
       onDragEnd={props.handleDragEnd}

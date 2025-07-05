@@ -83,7 +83,7 @@ export const LayersPanel = ({
       <div>Layers</div>
       <div className=''>
         <button
-          className='flat-button'
+          className='active:bg-[rgba(0, 0, 0, 0.2)] m-[0.1em] cursor-pointer rounded-[0.3rem] border border-[0.1px] bg-transparent px-[0.8em] py-[0.1em] hover:bg-[rgba(0,0,0,0.1)]'
           onClick={() => {
             let layername = 'Layer ' + (layerStates.length + 1)
             let layerId = crypto.randomUUID()
@@ -101,7 +101,7 @@ export const LayersPanel = ({
           +
         </button>
         <button
-          className='flat-button'
+          className='active:bg-[rgba(0, 0, 0, 0.2)] m-[0.1em] cursor-pointer rounded-[0.3rem] border border-[0.1px] bg-transparent px-[0.8em] py-[0.1em] hover:bg-[rgba(0,0,0,0.1)]'
           onClick={() => {
             console.log(
               'on click deleting  ' + ActiveLayer.current + ' in layer panel'

@@ -18,24 +18,24 @@ function LayerBoard() {
   const ActiveLayer: RefObject<string> = useRef<string>(crypto.randomUUID())
 
   return (
-    <div className='height-max'>
-      <div className='flex-col pos-abs height-max flex-col-center'>
+    <div className='h-full'>
+      <div className='absolute flex h-full flex-col justify-center'>
         <Toolbox
-          className='rounded-1 m-1 p-1  border-small flex-col flex-center '
+          className='m-1 flex flex-col items-center rounded-md border-2 p-1'
           ToolPropertiesRef={ToolPropertiesRef}
         />
       </div>
 
-      <div className='flex-col pos-abs height-max flex-col-center pos-right'>
+      <div className='absolute right-0 flex h-full flex-col justify-center'>
         <LayersPanel
-          className='rounded-1 m-1 p-1 border-small pos-abs pos-right pos-top'
+          className='absolute top-0 right-0 m-1 rounded-md border-2 p-1'
           CanvasContainerRef={CanvasContainerRef}
           ActiveLayer={ActiveLayer}
         />
       </div>
       <ColorPalette
         ToolPropertiesRef={ToolPropertiesRef}
-        className='palette rounded-1 m-1 p-1  border-small pos-bottom pos-abs width-max'
+        className='absolute bottom-0 z-[100] m-1 mt-0 mb-2 w-full rounded-md border-2 p-1'
       />
       <CanvasContainer
         ref={CanvasContainerRef}
