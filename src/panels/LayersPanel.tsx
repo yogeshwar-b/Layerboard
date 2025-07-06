@@ -2,7 +2,6 @@ import { RefObject, useReducer, useRef } from 'react'
 import { LayerButton } from '../components/LayerButton'
 import '../styles/utils.css'
 import { CanvasHandle } from './CanvasContainer'
-import '../styles/layerpanel.css'
 import { CanvasIdPrefix } from '../constants'
 
 interface LayersPanelProps {
@@ -79,7 +78,7 @@ export const LayersPanel = ({
   }
 
   return (
-    <div className={className + ' layer-panel'} ref={layerPanelRef}>
+    <div className={className + ' z-113 w-32'} ref={layerPanelRef}>
       <div>Layers</div>
       <div className=''>
         <button

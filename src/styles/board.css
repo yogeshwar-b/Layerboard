@@ -1,13 +1,3 @@
 :root {
   --mouse-cursor: default;
 }
-
-.canvas-1 {
-  background-color: gray;
-  margin: 10px;
-}
-
-.board {
-  display: grid;
-  place-content: center;
-}

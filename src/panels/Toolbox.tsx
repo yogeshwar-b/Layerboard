@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { Tools } from '../enums/tools'
 import { ToolButton } from '../components/ToolButton'
 import { toolbuttons } from '../constants'
-import '../styles/toolbox.css'
 
 interface ToolboxProps {
   className: string
@@ -50,8 +49,8 @@ export const Toolbox = (props: ToolboxProps) => {
     changeToolState(x)
   }
   return (
-    <div className='flex flex-col '>
-      <div className={props.className + ' tool-box'}>
+    <div className='flex flex-col'>
+      <div className={props.className + ' z-110 w-20'}>
         <div>Toolbox</div>
         {toolbuttons.map((t) => {
           return (
@@ -71,7 +70,7 @@ export const Toolbox = (props: ToolboxProps) => {
             type='range'
             name='brushSize'
             id='brushSize'
-            className='brush-size-slider'
+            className='my-2 w-full'
             onInput={(e) => {
               props.ToolPropertiesRef.current.size = parseInt(
                 (e.target as HTMLInputElement).value
