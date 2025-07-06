@@ -2,7 +2,6 @@ import { RefObject, useReducer, useRef } from 'react'
 import { LayerButton } from '../components/LayerButton'
 import '../styles/utils.css'
 import { CanvasHandle } from './CanvasContainer'
-import '../styles/layerpanel.css'
 import { CanvasIdPrefix } from '../constants'
 
 interface LayersPanelProps {
@@ -79,11 +78,14 @@ export const LayersPanel = ({
   }
 
   return (
-    <div className={className + ' layer-panel'} ref={layerPanelRef}>
+    <div
+      className={className + ' z-113 flex flex-col items-center'}
+      ref={layerPanelRef}
+    >
       <div>Layers</div>
-      <div className=''>
+      <div>
         <button
-          className='flat-button'
+          className='active:bg-[rgba(0, 0, 0, 0.2)] mr-1 h-8 w-8 cursor-pointer rounded-lg border-1 border-solid border-black bg-transparent p-1 hover:bg-[rgba(0,0,0,0.1)]'
           onClick={() => {
             let layername = 'Layer ' + (layerStates.length + 1)
             let layerId = crypto.randomUUID()
@@ -101,7 +103,7 @@ export const LayersPanel = ({
           +
         </button>
         <button
-          className='flat-button'
+          className='active:bg-[rgba(0, 0, 0, 0.2)] mr-1 h-8 w-8 cursor-pointer rounded-lg border-1 border-solid border-black bg-transparent p-1 hover:bg-[rgba(0,0,0,0.1)]'
           onClick={() => {
             console.log(
               'on click deleting  ' + ActiveLayer.current + ' in layer panel'
@@ -118,7 +120,7 @@ export const LayersPanel = ({
           -
         </button>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
+      <div className='flex flex-col-reverse'>
         {layerStates.map((i) => {
           return (
             <LayerButton

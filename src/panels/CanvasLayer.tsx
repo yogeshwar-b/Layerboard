@@ -1,8 +1,6 @@
 import { ReactNode, RefObject, useRef, useState } from 'react'
 import { Tools } from '../enums/tools'
 import { CanvasIdPrefix } from '../constants'
-import '../styles/svg.css'
-import '../styles/canvaslayer.css'
 import { ToolProperties } from './Toolbox'
 
 var offsetX = 0,
@@ -38,17 +36,16 @@ export const CanvasLayer = ({
   return (
     <div
       id={CanvasLayerId}
-      className='drawing-board'
+      className='absolute h-full w-full'
       onMouseDown={MouseDownHandle}
       onMouseMove={MouseMoveHandle}
       // onMouseOut={MouseOutHandle}
       onMouseUp={MouseUpHandle}
-      style={{ height: '100%', width: '100%', position: 'absolute' }}
     >
       {MoveToolOverlay.ShowMoveToolOverlay ? (
         <div
           // draggable='true'
-          className='move-overlay'
+          className='absolute border-4 border-solid border-white'
           style={{
             zIndex: 120,
             height:
@@ -222,7 +219,7 @@ const PolyLineSVG = ({
         {/* isMoving?<div>something moving</div> */}
         <polyline
           points={points}
-          className='poly-line'
+          className='pointer-events-auto transform-none fill-none'
           ref={newPolyLineRef}
           style={{
             transform: 'matrix(1, 0, 0, 1, 0, 0)',

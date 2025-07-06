@@ -51,11 +51,11 @@ export const CanvasContainer = ({
     }
   }))
   return (
-    <div className='top-left pos-abs height-max width-max canvas-container'>
+    <div className='top-left canvas-container absolute h-full w-full'>
       {CanvasList.map((c: string) => {
         return (
           <CanvasLayer
-            className='top-left pos-abs'
+            className='top-left absolute'
             canvasId={c}
             key={c}
             ToolPropertiesRef={ToolPropertiesRef}

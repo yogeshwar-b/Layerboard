@@ -15,7 +15,7 @@ interface LayerButtonProps {
 export const LayerButton = (props: LayerButtonProps) => {
   return (
     <div
-      className=' flex-row'
+      className='flex flex-row'
       onDragStart={() => props.handleDragStart(props.id)}
       onDragEnter={() => props.handleDragEnter(props.id)}
       onDragEnd={props.handleDragEnd}
@@ -31,7 +31,7 @@ export const LayerButton = (props: LayerButtonProps) => {
         name={'layer-select'}
         defaultChecked={props.ActiveLayer.current === props.id}
       />
-      <label htmlFor={props.id} style={{ flex: 1, textAlign: 'center' }}>
+      <label htmlFor={props.id} className='align-right ml-1 cursor-pointer'>
         {props.name}
       </label>
     </div>

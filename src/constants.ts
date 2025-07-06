@@ -26,7 +26,7 @@ export const toolbuttons: ToolButton[] = [
     iconPath: eraserIcon,
     toolNum: Tools.Eraser
   },
-  { name: 'Move', iconPath: moveIcon, toolNum: Tools.Move }
+  { name: 'Move (Work in Progress)', iconPath: moveIcon, toolNum: Tools.Move }
 ]
 
 export const CanvasIdPrefix: string = 'CanvasLayer'

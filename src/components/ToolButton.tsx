@@ -1,5 +1,4 @@
 import '../styles/utils.css'
-import '../styles/toolbox.css'
 import { Tools } from '../enums/tools'
 
 interface ToolButtonProps {
@@ -15,9 +14,9 @@ export const ToolButton = (props: ToolButtonProps) => {
   return (
     <label htmlFor={props.id} title={props.name}>
       <input
-        className='disp-no'
+        className='peer hidden'
         type='radio'
-        name={props.name}
+        name='toolradio'
         id={props.id}
         title={props.id}
         onChange={(e) => {
@@ -26,7 +25,11 @@ export const ToolButton = (props: ToolButtonProps) => {
         }}
         checked={props.toolState == props.toolNum}
       />
-      <img src={props.iconpath} alt='some icon' className='flat-button icon' />
+      <img
+        src={props.iconpath}
+        alt='some icon'
+        className='cursor-pointer rounded-[0.3rem] border-4 border-transparent p-1 peer-checked:border-black hover:bg-gray-700'
+      />
     </label>
   )
 }
