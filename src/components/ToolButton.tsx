@@ -28,7 +28,7 @@ export const ToolButton = (props: ToolButtonProps) => {
       <img
         src={props.iconpath}
         alt='some icon'
-        className='cursor-pointer rounded-[0.3rem] border-4 border-transparent bg-transparent p-1 peer-checked:border-black hover:bg-gray-700'
+        className='cursor-pointer rounded-[0.3rem] border-4 border-transparent p-1 peer-checked:border-black hover:bg-gray-700'
       />
     </label>
   )

@@ -31,22 +31,15 @@ export const ColorPalette = (props: ColorPaletteProps) => {
   )
 
   return (
-    <div className={props.className}>
-      <div style={{ display: 'flex' }}>
+    <div className='absolute bottom-2 z-[100] flex w-full justify-center'>
+      <div className='flex flex-wrap rounded-lg border-2 border-solid border-black p-1'>
         {paletteColors.map((color, index) => (
           <div
             key={index}
-            className='color-box'
-            style={{
-              backgroundColor: color,
-              width: '30px',
-              height: '30px',
-              margin: '5px',
-              cursor: 'pointer',
-              borderRadius: '5px',
-              boxShadow: '0 0 5px rgba(0,0,0,0.2)',
-              border: colorState === color ? '2px solid black' : 'none'
-            }}
+            className={`m-1.5 h-7 w-7 cursor-pointer rounded-lg shadow-[0_0_5px_rgba(0,0,0,0.2)] ${
+              colorState === color ? 'border-2 border-black' : 'border-none'
+            }`}
+            style={{ backgroundColor: color }}
             onClick={() => {
               console.log(`Selected color: ${color}`)
               props.ToolPropertiesRef.current.color = color as `#${string}`

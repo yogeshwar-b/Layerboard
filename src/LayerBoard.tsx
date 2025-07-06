@@ -26,17 +26,12 @@ function LayerBoard() {
         />
       </div>
 
-      <div className='absolute right-0 flex h-full flex-col justify-center'>
-        <LayersPanel
-          className='absolute top-0 right-0 m-1 rounded-md border-2 p-1'
-          CanvasContainerRef={CanvasContainerRef}
-          ActiveLayer={ActiveLayer}
-        />
-      </div>
-      <ColorPalette
-        ToolPropertiesRef={ToolPropertiesRef}
-        className='absolute bottom-0 z-[100] m-1 mt-0 mb-2 w-full rounded-md border-2 p-1'
+      <LayersPanel
+        className='absolute top-0 right-0 m-1 rounded-md border-2 p-1'
+        CanvasContainerRef={CanvasContainerRef}
+        ActiveLayer={ActiveLayer}
       />
+      <ColorPalette ToolPropertiesRef={ToolPropertiesRef} className='' />
       <CanvasContainer
         ref={CanvasContainerRef}
         ToolPropertiesRef={ToolPropertiesRef}
