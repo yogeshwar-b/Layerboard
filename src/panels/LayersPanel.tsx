@@ -78,11 +78,14 @@ export const LayersPanel = ({
   }
 
   return (
-    <div className={className + ' z-113 w-32'} ref={layerPanelRef}>
+    <div
+      className={className + ' z-113 flex flex-col items-center'}
+      ref={layerPanelRef}
+    >
       <div>Layers</div>
       <div>
         <button
-          className='active:bg-[rgba(0, 0, 0, 0.2)] mr-1 aspect-1/1 h-8 w-8 cursor-pointer rounded-lg border-1 border-solid border-black bg-transparent p-1 hover:bg-[rgba(0,0,0,0.1)]'
+          className='active:bg-[rgba(0, 0, 0, 0.2)] mr-1 h-8 w-8 cursor-pointer rounded-lg border-1 border-solid border-black bg-transparent p-1 hover:bg-[rgba(0,0,0,0.1)]'
           onClick={() => {
             let layername = 'Layer ' + (layerStates.length + 1)
             let layerId = crypto.randomUUID()
@@ -100,7 +103,7 @@ export const LayersPanel = ({
           +
         </button>
         <button
-          className='active:bg-[rgba(0, 0, 0, 0.2)] cursor-pointer rounded-lg border-1 border-solid border-black bg-transparent p-1 hover:bg-[rgba(0,0,0,0.1)]'
+          className='active:bg-[rgba(0, 0, 0, 0.2)] mr-1 h-8 w-8 cursor-pointer rounded-lg border-1 border-solid border-black bg-transparent p-1 hover:bg-[rgba(0,0,0,0.1)]'
           onClick={() => {
             console.log(
               'on click deleting  ' + ActiveLayer.current + ' in layer panel'
