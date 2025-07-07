@@ -20,6 +20,14 @@ function LayerBoard() {
   return (
     <div className='h-full'>
       <div className='absolute flex h-full flex-col justify-center'>
+        <button
+          onClick={() => {
+            document.body.classList.toggle('dark')
+          }}
+          className='z-110 cursor-pointer rounded-md border-1'
+        >
+          Dark Mode
+        </button>
         <Toolbox
           className='m-1 flex flex-col items-center rounded-md border-2 p-1'
           ToolPropertiesRef={ToolPropertiesRef}
