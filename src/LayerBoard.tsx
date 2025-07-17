@@ -1,4 +1,4 @@
-import { RefObject, useRef } from 'react'
+import { Dispatch, RefObject, SetStateAction, useRef, useState } from 'react'
 import { ColorPalette } from './panels/ColorPalette'
 import { LayersPanel } from './panels/LayersPanel'
 import { Toolbox } from './panels/Toolbox'
@@ -17,6 +17,8 @@ function LayerBoard() {
     useRef<CanvasHandle>(null)
   const ActiveLayer: RefObject<string> = useRef<string>(crypto.randomUUID())
 
+  const [ToolState, changeToolState]: [Tools, Dispatch<SetStateAction<Tools>>] =
+    useState<Tools>(Tools.Brush)
   return (
     <div className='h-full'>
       <div className='absolute flex h-full flex-col justify-center'>
@@ -31,6 +33,8 @@ function LayerBoard() {
         <Toolbox
           className='m-1 flex flex-col items-center rounded-md border-2 p-1'
           ToolPropertiesRef={ToolPropertiesRef}
+          ToolState={ToolState}
+          changeToolState={changeToolState}
         />
       </div>
 
@@ -44,6 +48,7 @@ function LayerBoard() {
         ref={CanvasContainerRef}
         ToolPropertiesRef={ToolPropertiesRef}
         ActiveLayer={ActiveLayer}
+        ToolState={ToolState}
       />
     </div>
   )

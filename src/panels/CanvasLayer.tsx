@@ -9,6 +9,7 @@ interface CanvasLayerProps {
   canvasId: string
   className: string
   ToolPropertiesRef: React.RefObject<ToolProperties>
+  ToolState: Tools
 }
 interface MoveToolOverlay {
   ShowMoveToolOverlay: boolean
@@ -45,7 +46,7 @@ export const CanvasLayer = ({
       {MoveToolOverlay.ShowMoveToolOverlay ? (
         <div
           // draggable='true'
-          className='absolute border-4 border-solid border-white'
+          className='absolute outline-2 outline-offset-3 outline-blue-600 outline-dashed'
           style={{
             zIndex: 120,
             height:
@@ -229,6 +230,12 @@ const PolyLineSVG = ({
           name={name}
           onPointerDown={() => {
             //True if Tool is not None
+            console.log(
+              'pointer down on line ',
+              name,
+              ToolPropertiesRef.current.tool,
+              Tools.Move
+            )
             isToolActive.current = ToolPropertiesRef.current.tool != Tools.None
             if (ToolPropertiesRef.current.tool == Tools.Move) {
               changeMoveToolOverlay({
