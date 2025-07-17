@@ -13,14 +13,14 @@ interface CanvasLayerProps {
 }
 interface MoveToolOverlay {
   ShowMoveToolOverlay: boolean
-  PolyLineRef: RefObject<SVGPolylineElement | null> | null
+  PolyLineRef: RefObject<SVGSVGElement | null> | null
   name: string
 }
 export const CanvasLayer = ({
   canvasId,
   ToolPropertiesRef
 }: CanvasLayerProps) => {
-  const ActivePolyLineRef = useRef<RefObject<SVGPolylineElement> | null>(null)
+  const ActivePolyLineRef = useRef<RefObject<SVGSVGElement> | null>(null)
   const [PolyLineList, changePolyLineList] = useState<Array<ReactNode>>([])
   const isToolActive = useRef<boolean>(false)
   const [MoveToolOverlay, changeMoveToolOverlay] = useState<MoveToolOverlay>({
@@ -160,20 +160,23 @@ export const CanvasLayer = ({
   }
 
   function MouseMoveHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    // console.log('mouse moved but isDrawing is ' + isDrawing)
+    console.log('mouse moved is drawing ')
 
     if (ToolPropertiesRef.current.tool == Tools.Brush && isToolActive.current) {
       const rect = document
         .getElementById(CanvasLayerId)
         ?.getBoundingClientRect()
 
-      let points1 = ActivePolyLineRef?.current?.current?.getAttribute('points')
+      const firstPolyline =
+        ActivePolyLineRef?.current?.current?.querySelector('polyline')
+      let points1 = firstPolyline?.getAttribute('points')
+
       if (rect) {
+        console.log('points1 is ', points1)
         points1 += ` ${e.clientX - rect.left},${e.clientY - rect.top}`
-        ActivePolyLineRef?.current?.current?.setAttribute(
-          'points',
-          points1 ? points1 : ''
-        )
+        ActivePolyLineRef?.current?.current
+          ?.getElementsByTagName('polyline')[0]
+          .setAttribute('points', points1 ? points1 : '')
       }
     }
   }
@@ -188,7 +191,7 @@ interface PolyLineSVGProps {
   isToolActive: React.RefObject<boolean>
   name: string
   changeMoveToolOverlay: React.Dispatch<React.SetStateAction<MoveToolOverlay>>
-  ActivePolyLineRef: RefObject<RefObject<SVGPolylineElement | null> | null>
+  ActivePolyLineRef: RefObject<RefObject<SVGSVGElement | null> | null>
   ToolPropertiesRef: React.RefObject<ToolProperties>
 }
 const PolyLineSVG = ({
@@ -199,20 +202,47 @@ const PolyLineSVG = ({
   changeMoveToolOverlay,
   ActivePolyLineRef
 }: PolyLineSVGProps) => {
-  const newPolyLineRef = useRef<SVGPolylineElement>(null)
+  const newSVGRef = useRef<SVGSVGElement>(null)
   // PolylinesRef.current = [...PolylinesRef.current, newPolyLineRef]
-  ActivePolyLineRef.current = newPolyLineRef
+  ActivePolyLineRef.current = newSVGRef
   return (
     <svg
       height={'100%'}
       width={'100%'}
-      style={{ position: 'absolute', pointerEvents: 'none' }}
+      style={{
+        position: 'absolute',
+        transform: 'matrix(1, 0, 0, 1, 0, 0)',
+        stroke: ToolPropertiesRef.current.color,
+        strokeWidth: ToolPropertiesRef.current.size,
+        pointerEvents: 'none'
+      }}
       onPointerMove={(e: React.MouseEvent) => {
         if (
           isToolActive.current &&
           ToolPropertiesRef.current.tool == Tools.Eraser
         ) {
-          ;(e.target as SVGPolylineElement).points.clear()
+          ;(e.target as SVGSVGElement)
+            .getElementsByTagName('polyline')[0]
+            .points.clear()
+        }
+      }}
+      ref={newSVGRef}
+      name={name}
+      onPointerDown={() => {
+        //True if Tool is not None
+        console.log(
+          'pointer down on line ',
+          name,
+          ToolPropertiesRef.current.tool,
+          Tools.Move
+        )
+        isToolActive.current = ToolPropertiesRef.current.tool != Tools.None
+        if (ToolPropertiesRef.current.tool == Tools.Move) {
+          changeMoveToolOverlay({
+            ShowMoveToolOverlay: true,
+            PolyLineRef: newSVGRef,
+            name: name
+          })
         }
       }}
     >
@@ -221,30 +251,6 @@ const PolyLineSVG = ({
         <polyline
           points={points}
           className='pointer-events-auto transform-none fill-none'
-          ref={newPolyLineRef}
-          style={{
-            transform: 'matrix(1, 0, 0, 1, 0, 0)',
-            stroke: ToolPropertiesRef.current.color,
-            strokeWidth: ToolPropertiesRef.current.size
-          }}
-          name={name}
-          onPointerDown={() => {
-            //True if Tool is not None
-            console.log(
-              'pointer down on line ',
-              name,
-              ToolPropertiesRef.current.tool,
-              Tools.Move
-            )
-            isToolActive.current = ToolPropertiesRef.current.tool != Tools.None
-            if (ToolPropertiesRef.current.tool == Tools.Move) {
-              changeMoveToolOverlay({
-                ShowMoveToolOverlay: true,
-                PolyLineRef: newPolyLineRef,
-                name: name
-              })
-            }
-          }}
         ></polyline>
       </g>
     </svg>
