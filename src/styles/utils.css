@@ -1,5 +1,0 @@
-/* general util classes implementation */
-
-.canvas-container:hover {
-  cursor: var(--mouse-cursor, crosshair);
-}

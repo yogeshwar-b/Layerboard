@@ -23,36 +23,41 @@ export const CanvasLayer = ({
   const isDrawing = useRef(false)
   const points = useRef<string>('')
   const polylinesRef = useRef<(SVGPolylineElement | null)[]>([])
+  const selectedPolylineIndexRef = useRef<number>(-1)
   // const [polylines, setPolylines] = useState<string[]>([])
   const [polylineStates, dispatch] = useReducer(polylineReducer, [])
   const handleMouseDown = (e: React.MouseEvent) => {
-    isDrawing.current = true
-    points.current = getRelativePoint(e)
-    dispatch({
-      type: 'add',
-      polyLineState: {
-        points: points.current,
-        strokeWidth: ToolPropertiesRef.current?.size || 2,
-        strokeColor: ToolPropertiesRef.current?.color || 'Black'
-      }
-    })
+    if (!isDrawing.current && ToolState == Tools.Brush) {
+      isDrawing.current = true
+      points.current = getRelativePoint(e)
+      dispatch({
+        type: 'add',
+        polyLineState: {
+          points: points.current,
+          strokeWidth: ToolPropertiesRef.current?.size || 2,
+          strokeColor: ToolPropertiesRef.current?.color || 'Black'
+        }
+      })
+    }
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDrawing.current) return
-
-    const newPoint = getRelativePoint(e)
-    points.current += ` ${newPoint}`
-    requestAnimationFrame(() => {
-      polylinesRef.current[polylinesRef.current.length - 1]?.setAttribute(
-        'points',
-        points.current
-      )
-    })
+    if (isDrawing.current && ToolState == Tools.Brush) {
+      const newPoint = getRelativePoint(e)
+      points.current += ` ${newPoint}`
+      requestAnimationFrame(() => {
+        polylinesRef.current[polylinesRef.current.length - 1]?.setAttribute(
+          'points',
+          points.current
+        )
+      })
+    }
   }
 
   const handleMouseUp = () => {
-    isDrawing.current = false
+    if (ToolState == Tools.Brush) {
+      isDrawing.current = false
+    }
   }
 
   const getRelativePoint = (e: React.MouseEvent) => {
@@ -78,10 +83,15 @@ export const CanvasLayer = ({
             ref={(el) => {
               if (el) polylinesRef.current[index] = el
             }}
-            className={`fill-none stroke-black ${ToolState == Tools.Move ? 'cursor-move' : ''}`}
+            className={`fill-none ${ToolState == Tools.Move ? 'cursor-move outline-blue-400 hover:outline-solid' : ''}`}
             style={{
               strokeWidth: state.strokeWidth,
               stroke: state.strokeColor
+            }}
+            onClick={() => {
+              if (ToolState == Tools.Move) {
+                selectedPolylineIndexRef.current = index
+              }
             }}
           ></polyline>
         )

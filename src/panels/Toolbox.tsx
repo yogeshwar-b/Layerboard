@@ -22,33 +22,6 @@ export const Toolbox = ({
   changeToolState
 }: ToolboxProps) => {
   function changeToolState1(x: Tools) {
-    const r = document.querySelector(':root') as HTMLElement | null
-
-    switch (x) {
-      case Tools.None:
-        r?.style.setProperty(
-          '--mouse-cursor',
-          "url('/Layerboard/icons/mousearrow.svg'), default"
-        )
-        break
-      case Tools.Brush:
-        r?.style.setProperty('--mouse-cursor', 'crosshair')
-        break
-      case Tools.Eraser:
-        r?.style.setProperty(
-          '--mouse-cursor',
-          "url('/Layerboard/icons/eraser.svg'), cell"
-        )
-        break
-      case Tools.Move:
-        r?.style.setProperty(
-          '--mouse-cursor',
-          "url('/Layerboard/icons/move.svg'), all-scroll"
-        )
-        break
-      default:
-        break
-    }
     ToolPropertiesRef.current.tool = x
     changeToolState(x)
   }
