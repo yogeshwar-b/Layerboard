@@ -1,22 +1,18 @@
-import { ReactNode, RefObject, useReducer, useRef, useState } from 'react'
+import { RefObject, useReducer, useRef } from 'react'
 import { Tools } from '../enums/tools'
 import { CanvasIdPrefix } from '../constants'
 import { ToolProperties } from './Toolbox'
 
 interface CanvasLayerProps {
   canvasId: string
-  className: string
-  ToolPropertiesRef: React.RefObject<ToolProperties>
+  ToolPropertiesRef: RefObject<ToolProperties>
   ToolState: Tools
 }
-interface MoveToolOverlay {
-  ShowMoveToolOverlay: boolean
-  PolyLineRef: RefObject<SVGSVGElement | null> | null
-  name: string
-}
+
 interface polyLineState {
   points: string
   strokeWidth: number
+  strokeColor: string
 }
 export const CanvasLayer = ({
   canvasId,
@@ -36,7 +32,8 @@ export const CanvasLayer = ({
       type: 'add',
       polyLineState: {
         points: points.current,
-        strokeWidth: ToolPropertiesRef.current?.size || 2
+        strokeWidth: ToolPropertiesRef.current?.size || 2,
+        strokeColor: ToolPropertiesRef.current?.color || 'Black'
       }
     })
   }
@@ -46,7 +43,6 @@ export const CanvasLayer = ({
 
     const newPoint = getRelativePoint(e)
     points.current += ` ${newPoint}`
-    console.log('points are', points.current)
     requestAnimationFrame(() => {
       polylinesRef.current[polylinesRef.current.length - 1]?.setAttribute(
         'points',
@@ -68,10 +64,11 @@ export const CanvasLayer = ({
   return (
     <svg
       ref={svgRef}
-      className='h-full w-full'
+      className='absolute h-full w-full'
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      id={CanvasIdPrefix + canvasId}
     >
       {polylineStates.map((state, index) => {
         return (
@@ -81,8 +78,11 @@ export const CanvasLayer = ({
             ref={(el) => {
               if (el) polylinesRef.current[index] = el
             }}
-            className={`fill-none stroke-black`}
-            style={{ strokeWidth: state.strokeWidth }}
+            className={`fill-none stroke-black ${ToolState == Tools.Move ? 'cursor-move' : ''}`}
+            style={{
+              strokeWidth: state.strokeWidth,
+              stroke: state.strokeColor
+            }}
           ></polyline>
         )
       })}

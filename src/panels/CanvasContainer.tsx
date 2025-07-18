@@ -58,7 +58,6 @@ export const CanvasContainer = ({
       {CanvasList.map((c: string) => {
         return (
           <CanvasLayer
-            className='top-left absolute'
             canvasId={c}
             key={c}
             ToolPropertiesRef={ToolPropertiesRef}
