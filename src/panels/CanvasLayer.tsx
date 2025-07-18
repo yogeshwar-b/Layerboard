@@ -1,4 +1,4 @@
-import { ReactNode, RefObject, useEffect, useRef, useState } from 'react'
+import { ReactNode, RefObject, useReducer, useRef, useState } from 'react'
 import { Tools } from '../enums/tools'
 import { CanvasIdPrefix } from '../constants'
 import { ToolProperties } from './Toolbox'
@@ -14,7 +14,10 @@ interface MoveToolOverlay {
   PolyLineRef: RefObject<SVGSVGElement | null> | null
   name: string
 }
-
+interface polyLineState {
+  points: string
+  strokeWidth: number
+}
 export const CanvasLayer = ({
   canvasId,
   ToolPropertiesRef,
@@ -24,11 +27,18 @@ export const CanvasLayer = ({
   const isDrawing = useRef(false)
   const points = useRef<string>('')
   const polylinesRef = useRef<(SVGPolylineElement | null)[]>([])
-  const [polylines, setPolylines] = useState<string[]>([])
+  // const [polylines, setPolylines] = useState<string[]>([])
+  const [polylineStates, dispatch] = useReducer(polylineReducer, [])
   const handleMouseDown = (e: React.MouseEvent) => {
     isDrawing.current = true
     points.current = getRelativePoint(e)
-    setPolylines((prev) => [...prev, points.current])
+    dispatch({
+      type: 'add',
+      polyLineState: {
+        points: points.current,
+        strokeWidth: ToolPropertiesRef.current?.size || 2
+      }
+    })
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -63,18 +73,31 @@ export const CanvasLayer = ({
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-      {polylines.map((line, index) => {
+      {polylineStates.map((state, index) => {
         return (
           <polyline
-            points={line}
+            points={state.points}
             key={index}
             ref={(el) => {
               if (el) polylinesRef.current[index] = el
             }}
-            className='fill-none stroke-black stroke-2'
+            className={`fill-none stroke-black`}
+            style={{ strokeWidth: state.strokeWidth }}
           ></polyline>
         )
       })}
     </svg>
   )
+  interface action {
+    type: string
+    polyLineState: polyLineState
+  }
+  function polylineReducer(polylines: polyLineState[], action: action) {
+    switch (action.type) {
+      case 'add':
+        return [...polylines, action.polyLineState]
+      default:
+        return polylines
+    }
+  }
 }
