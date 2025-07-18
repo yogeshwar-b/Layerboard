@@ -128,31 +128,37 @@ export const CanvasLayer = ({
       id={CanvasIdPrefix + canvasId}
     >
       {polylineStates.map((state, index) => (
-        <polyline
-          key={index}
-          points={state.points}
-          ref={(el) => {
-            if (el) polylinesRef.current[index] = el
-          }}
-          className={`fill-none ${
-            selectedIndex == index && ToolState == Tools.Move
-              ? 'outline-2 outline-offset-3 outline-blue-400'
-              : ''
-          }`}
-          style={{
-            strokeWidth: state.strokeWidth,
-            stroke: state.strokeColor,
-            translate: `${state.translateX}px ${state.translateY}px`,
-            pointerEvents: 'visibleStroke'
-          }}
-          onMouseDown={(e) => {
-            if (ToolState == Tools.Move) {
-              selectedPolylineIndexRef.current = index
-              setSelectedIndex(index)
-              e.stopPropagation()
-            }
-          }}
-        />
+        <g>
+          {selectedIndex == index && (
+            <MoveBoxSVG polylinesRef={polylinesRef} polylineIndex={index} />
+          )}
+          <polyline
+            key={index}
+            points={state.points}
+            ref={(el) => {
+              if (el) polylinesRef.current[index] = el
+            }}
+            className={`fill-none ${
+              selectedIndex == index
+                ? 'pointer-events-none'
+                : ToolState == Tools.Move
+                  ? 'hover:cursor-pointer'
+                  : ''
+            }`}
+            style={{
+              strokeWidth: state.strokeWidth,
+              stroke: state.strokeColor,
+              translate: `${state.translateX}px ${state.translateY}px`
+            }}
+            onClick={(e) => {
+              if (ToolState == Tools.Move) {
+                selectedPolylineIndexRef.current = index
+                setSelectedIndex(index)
+                e.stopPropagation()
+              }
+            }}
+          />
+        </g>
       ))}
     </svg>
   )
@@ -177,4 +183,28 @@ export const CanvasLayer = ({
         return polylines
     }
   }
+}
+
+const MoveBoxSVG = ({
+  polylinesRef,
+  polylineIndex
+}: {
+  polylinesRef: RefObject<(SVGPolylineElement | null)[]>
+  polylineIndex: number
+}) => {
+  const polylineRect =
+    polylinesRef.current[polylineIndex]?.getBoundingClientRect()
+  // console.log(polylineRect)
+  return (
+    <svg className='absolute fill-blue-50 opacity-75 hover:cursor-move'>
+      <rect
+        width={polylineRect?.width}
+        height={polylineRect?.height}
+        x={polylineRect?.x}
+        y={polylineRect?.y}
+        stroke-width='1.5'
+        stroke='lightsteelblue'
+      />
+    </svg>
+  )
 }
