@@ -11,6 +11,7 @@ interface CanvasLayerProps {
 
 interface polyLineState {
   points: string
+  id: string
   strokeWidth: number
   strokeColor: string
   translateX: number
@@ -20,6 +21,7 @@ interface polyLineState {
 type Action =
   | { type: 'add'; polyLineState: polyLineState }
   | { type: 'translate'; index: number; dx: number; dy: number }
+  | { type: 'erase'; index: number }
 
 export const CanvasLayer = ({
   canvasId,
@@ -36,6 +38,7 @@ export const CanvasLayer = ({
   const svgRef = useRef<SVGSVGElement>(null)
   const isDrawing = useRef(false)
   const isDragging = useRef(false)
+  const isErasing = useRef(false)
   const dragStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
   const points = useRef<string>('')
 
@@ -52,6 +55,7 @@ export const CanvasLayer = ({
       dispatch({
         type: 'add',
         polyLineState: {
+          id: crypto.randomUUID(),
           points: points.current,
           strokeWidth: ToolPropertiesRef.current?.size || 2,
           strokeColor: ToolPropertiesRef.current?.color || 'Black',
@@ -68,6 +72,9 @@ export const CanvasLayer = ({
         const { x, y } = getMouseCoords(e)
         dragStart.current = { x, y }
       }
+    }
+    if (ToolState == Tools.Eraser) {
+      isErasing.current = true
     }
   }
 
@@ -99,6 +106,8 @@ export const CanvasLayer = ({
         })
       }
     }
+    if (isErasing.current && ToolState == Tools.Eraser) {
+    }
   }
 
   const handleMouseUp = () => {
@@ -108,6 +117,9 @@ export const CanvasLayer = ({
 
     if (ToolState == Tools.Move) {
       isDragging.current = false
+    }
+    if (ToolState == Tools.Eraser) {
+      isErasing.current = false
     }
   }
 
@@ -135,21 +147,20 @@ export const CanvasLayer = ({
       id={CanvasIdPrefix + canvasId}
     >
       {polylineStates.map((state, index) => (
-        <g>
+        <g key={state.id}>
           {selectedIndex == index && (
             <MoveBoxSVG polylinesRef={polylinesRef} polylineIndex={index} />
           )}
           <polyline
-            key={index}
             points={state.points}
             ref={(el) => {
               if (el) polylinesRef.current[index] = el
             }}
             className={`fill-none ${
-              selectedIndex == index
+              selectedIndex == index && ToolState == Tools.Move
                 ? 'pointer-events-none'
-                : ToolState == Tools.Move
-                  ? 'hover:cursor-pointer'
+                : ToolState == Tools.Move || ToolState == Tools.Eraser
+                  ? 'pointer-events-auto hover:cursor-pointer'
                   : ''
             }`}
             style={{
@@ -161,6 +172,15 @@ export const CanvasLayer = ({
               if (ToolState == Tools.Move) {
                 selectedPolylineIndexRef.current = index
                 setSelectedIndex(index)
+                e.stopPropagation()
+              }
+            }}
+            onMouseEnter={(e) => {
+              if (ToolState == Tools.Eraser && isErasing.current) {
+                dispatch({
+                  type: 'erase',
+                  index
+                })
                 e.stopPropagation()
               }
             }}
@@ -186,6 +206,8 @@ export const CanvasLayer = ({
             translateY: poly.translateY + action.dy
           }
         })
+      case 'erase':
+        return polylines.filter((_, i) => i !== action.index)
       default:
         return polylines
     }
