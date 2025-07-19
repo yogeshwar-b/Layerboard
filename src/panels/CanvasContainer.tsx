@@ -3,6 +3,7 @@ import { useImperativeHandle, useReducer } from 'react'
 import '../styles/utils.css'
 import { CanvasLayer } from './CanvasLayer'
 import { ToolProperties } from './Toolbox'
+import { Tools } from '../enums/tools'
 
 export interface CanvasHandle {
   CanvasAdd: (name: string) => void
@@ -13,11 +14,13 @@ interface CanvasContainerProps {
   ActiveLayer: React.RefObject<string>
   ToolPropertiesRef: React.RefObject<ToolProperties>
   ref: React.RefObject<CanvasHandle | null>
+  ToolState: Tools
 }
 export const CanvasContainer = ({
   ToolPropertiesRef,
   ActiveLayer,
-  ref
+  ref,
+  ToolState
 }: CanvasContainerProps) => {
   const [CanvasList, dispatch] = useReducer(CanvasReducer, [
     ActiveLayer.current
@@ -55,10 +58,10 @@ export const CanvasContainer = ({
       {CanvasList.map((c: string) => {
         return (
           <CanvasLayer
-            className='top-left absolute'
             canvasId={c}
             key={c}
             ToolPropertiesRef={ToolPropertiesRef}
+            ToolState={ToolState}
           />
         )
       })}

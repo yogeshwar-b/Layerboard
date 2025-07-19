@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import { Tools } from '../enums/tools'
 import { ToolButton } from '../components/ToolButton'
 import { toolbuttons } from '../constants'
@@ -6,51 +6,28 @@ import { toolbuttons } from '../constants'
 interface ToolboxProps {
   className: string
   ToolPropertiesRef: React.RefObject<ToolProperties>
+  ToolState: Tools
+  changeToolState: Dispatch<SetStateAction<Tools>>
 }
 export interface ToolProperties {
-  tool: Tools
   color?: `#${string}`
   size?: number
+  tool: Tools
 }
 //@todo - remove button
-export const Toolbox = (props: ToolboxProps) => {
-  const [ToolState, changeToolState]: [Tools, Dispatch<SetStateAction<Tools>>] =
-    useState<Tools>(props.ToolPropertiesRef.current.tool)
-
+export const Toolbox = ({
+  className,
+  ToolPropertiesRef,
+  ToolState,
+  changeToolState
+}: ToolboxProps) => {
   function changeToolState1(x: Tools) {
-    const r = document.querySelector(':root') as HTMLElement | null
-
-    switch (x) {
-      case Tools.None:
-        r?.style.setProperty(
-          '--mouse-cursor',
-          "url('/Layerboard/icons/mousearrow.svg'), default"
-        )
-        break
-      case Tools.Brush:
-        r?.style.setProperty('--mouse-cursor', 'crosshair')
-        break
-      case Tools.Eraser:
-        r?.style.setProperty(
-          '--mouse-cursor',
-          "url('/Layerboard/icons/eraser.svg'), cell"
-        )
-        break
-      case Tools.Move:
-        r?.style.setProperty(
-          '--mouse-cursor',
-          "url('/Layerboard/icons/move.svg'), all-scroll"
-        )
-        break
-      default:
-        break
-    }
-    props.ToolPropertiesRef.current.tool = x
+    ToolPropertiesRef.current.tool = x
     changeToolState(x)
   }
   return (
     <div className='flex flex-col'>
-      <div className={props.className + ' z-110 w-20'}>
+      <div className={className + ' z-110 w-20'}>
         <div>Toolbox</div>
         {toolbuttons.map((t) => {
           return (
@@ -72,11 +49,11 @@ export const Toolbox = (props: ToolboxProps) => {
             id='brushSize'
             className='my-2 w-full'
             onInput={(e) => {
-              props.ToolPropertiesRef.current.size = parseInt(
+              ToolPropertiesRef.current.size = parseInt(
                 (e.target as HTMLInputElement).value
               )
             }}
-            defaultValue={props.ToolPropertiesRef.current.size || 5}
+            defaultValue={ToolPropertiesRef.current.size || 5}
             min={1}
             max={25}
           />
