@@ -1,4 +1,4 @@
-import { RefObject, useReducer, useRef, useState } from 'react'
+import { RefObject, useEffect, useReducer, useRef, useState } from 'react'
 import { Tools } from '../enums/tools'
 import { CanvasIdPrefix } from '../constants'
 import { ToolProperties } from './Toolbox'
@@ -26,6 +26,13 @@ export const CanvasLayer = ({
   ToolPropertiesRef,
   ToolState
 }: CanvasLayerProps) => {
+  useEffect(() => {
+    if (ToolState != Tools.Move) {
+      selectedPolylineIndexRef.current = -1
+      setSelectedIndex(-1)
+    }
+  }, [ToolState])
+
   const svgRef = useRef<SVGSVGElement>(null)
   const isDrawing = useRef(false)
   const isDragging = useRef(false)
@@ -34,7 +41,7 @@ export const CanvasLayer = ({
 
   const polylinesRef = useRef<(SVGPolylineElement | null)[]>([])
   const selectedPolylineIndexRef = useRef<number>(-1)
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1)
 
   const [polylineStates, dispatch] = useReducer(polylineReducer, [])
 
