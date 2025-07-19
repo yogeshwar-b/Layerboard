@@ -21,7 +21,7 @@ function LayerBoard() {
     useState<Tools>(Tools.Brush)
   return (
     <div className='h-full'>
-      <div className='absolute top-55 flex h-full flex-col'>
+      <div className='absolute top-55 flex flex-col'>
         <Toolbox
           className='m-1 flex flex-col items-center rounded-md border-2 p-1'
           ToolPropertiesRef={ToolPropertiesRef}
