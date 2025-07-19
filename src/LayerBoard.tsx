@@ -21,15 +21,7 @@ function LayerBoard() {
     useState<Tools>(Tools.Brush)
   return (
     <div className='h-full'>
-      <div className='absolute flex h-full flex-col justify-center'>
-        <button
-          onClick={() => {
-            document.body.classList.toggle('dark')
-          }}
-          className='z-110 cursor-pointer rounded-md border-1'
-        >
-          Dark Mode
-        </button>
+      <div className='absolute top-55 flex h-full flex-col'>
         <Toolbox
           className='m-1 flex flex-col items-center rounded-md border-2 p-1'
           ToolPropertiesRef={ToolPropertiesRef}
@@ -43,7 +35,10 @@ function LayerBoard() {
         CanvasContainerRef={CanvasContainerRef}
         ActiveLayer={ActiveLayer}
       />
-      <ColorPalette ToolPropertiesRef={ToolPropertiesRef} className='' />
+      <ColorPalette
+        ToolPropertiesRef={ToolPropertiesRef}
+        ToolState={ToolState}
+      />
       <CanvasContainer
         ref={CanvasContainerRef}
         ToolPropertiesRef={ToolPropertiesRef}

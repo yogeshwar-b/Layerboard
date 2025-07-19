@@ -26,8 +26,8 @@ export const Toolbox = ({
     changeToolState(x)
   }
   return (
-    <div className='flex flex-col'>
-      <div className={className + ' z-110 w-20'}>
+    <div className='z-110 flex w-20 flex-col pl-2'>
+      <div className={className}>
         <div>Toolbox</div>
         {toolbuttons.map((t) => {
           return (
@@ -42,25 +42,25 @@ export const Toolbox = ({
             ></ToolButton>
           )
         })}
-        {ToolState === Tools.Brush ? (
-          <input
-            type='range'
-            name='brushSize'
-            id='brushSize'
-            className='my-2 w-full'
-            onInput={(e) => {
-              ToolPropertiesRef.current.size = parseInt(
-                (e.target as HTMLInputElement).value
-              )
-            }}
-            defaultValue={ToolPropertiesRef.current.size || 5}
-            min={1}
-            max={25}
-          />
-        ) : (
-          <></>
-        )}
       </div>
+      {ToolState === Tools.Brush ? (
+        <input
+          type='range'
+          name='brushSize'
+          id='brushSize'
+          className='my-2 w-full transition-all duration-300'
+          onInput={(e) => {
+            ToolPropertiesRef.current.size = parseInt(
+              (e.target as HTMLInputElement).value
+            )
+          }}
+          defaultValue={ToolPropertiesRef.current.size || 5}
+          min={1}
+          max={25}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   )
 }
