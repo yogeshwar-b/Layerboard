@@ -52,14 +52,17 @@ export const CanvasContainer = ({
     }
   }))
   const customCursor = useCustomCursor({
-    color: ToolState.color,
-    size: ToolState.size
+    color: ToolState.tool == Tools.Brush ? ToolState.color : 'white',
+    size: ToolState.tool == Tools.Brush ? ToolState.size : 24
   })
   return (
     <div
       className={`top-left canvas-container absolute h-full w-full`}
       style={{
-        cursor: ToolState.tool == Tools.Brush ? customCursor : 'auto'
+        cursor:
+          ToolState.tool == Tools.Brush || ToolState.tool == Tools.Eraser
+            ? customCursor
+            : 'auto'
       }}
     >
       {CanvasList.map((c: string) => {

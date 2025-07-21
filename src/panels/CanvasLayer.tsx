@@ -155,7 +155,7 @@ export const CanvasLayer = ({ canvasId, ToolState }: CanvasLayerProps) => {
             className={`fill-none ${
               selectedIndex == index && ToolState.tool == Tools.Move
                 ? 'pointer-events-none'
-                : ToolState.tool == Tools.Move || ToolState.tool == Tools.Eraser
+                : ToolState.tool == Tools.Move
                   ? 'pointer-events-auto hover:cursor-pointer'
                   : ''
             }`}
