@@ -26,9 +26,8 @@ export const Toolbox = ({
     changeToolState(x)
   }
   return (
-    <div className='z-110 flex w-20 flex-col pl-2'>
+    <div className='z-110 flex w-20 flex-col pl-2 select-none'>
       <div className={className}>
-        <div>Toolbox</div>
         {toolbuttons.map((t) => {
           return (
             <ToolButton

@@ -144,6 +144,7 @@ export const CanvasLayer = ({
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
       id={CanvasIdPrefix + canvasId}
     >
       {polylineStates.map((state, index) => (
