@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { ToolProperties } from './Toolbox'
 import { Tools } from '../enums/tools'
 
 interface ColorPaletteProps {
-  ToolState: Tools
-  ToolPropertiesRef: React.RefObject<ToolProperties>
+  ToolState: ToolProperties
+  changeToolState: Dispatch<SetStateAction<ToolProperties>>
 }
 
 export const ColorPalette = ({
   ToolState,
-  ToolPropertiesRef
+  changeToolState
 }: ColorPaletteProps) => {
   const paletteColors = [
     '#FF0000',
@@ -30,12 +30,12 @@ export const ColorPalette = ({
   ]
 
   const [colorState, setColorState] = useState<`#${string}`>(
-    ToolPropertiesRef.current.color || '#000000'
+    ToolState.color || '#000000'
   )
 
   return (
     <div
-      className={`absolute bottom-2 z-[100] flex w-full overflow-clip ${ToolState != Tools.Brush ? 'opacity-0' : 'opacity-100'} justify-center transition-all duration-300`}
+      className={`absolute bottom-2 z-[100] flex w-full overflow-clip ${ToolState.tool != Tools.Brush ? 'opacity-0' : 'opacity-100'} justify-center transition-all duration-300`}
     >
       <div className='flex flex-wrap rounded-lg border-2 border-solid border-black p-1'>
         {paletteColors.map((color, index) => (
@@ -47,7 +47,10 @@ export const ColorPalette = ({
             style={{ backgroundColor: color }}
             onClick={() => {
               console.log(`Selected color: ${color}`)
-              ToolPropertiesRef.current.color = color as `#${string}`
+              changeToolState({
+                ...ToolState,
+                color: color as `#${string}`
+              })
               setColorState(color as `#${string}`)
             }}
           ></div>

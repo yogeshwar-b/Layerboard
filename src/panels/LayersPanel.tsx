@@ -79,7 +79,7 @@ export const LayersPanel = ({
 
   return (
     <div
-      className={className + ' z-113 flex flex-col items-center'}
+      className={className + ' z-113 flex flex-col items-center select-none'}
       ref={layerPanelRef}
     >
       <div>Layers</div>

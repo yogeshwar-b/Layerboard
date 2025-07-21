@@ -1,5 +1,6 @@
 import '../styles/utils.css'
 import { Tools } from '../enums/tools'
+import { ToolProperties } from '../panels/Toolbox'
 
 interface ToolButtonProps {
   name: string
@@ -7,26 +8,33 @@ interface ToolButtonProps {
   id: string
   toolNum: Tools
   changeToolState: (x: Tools) => void
-  toolState: Tools //Selected Tool
+  toolState: ToolProperties
 }
 
-export const ToolButton = (props: ToolButtonProps) => {
+export const ToolButton = ({
+  toolState,
+  id,
+  toolNum,
+  changeToolState,
+  name,
+  iconpath
+}: ToolButtonProps) => {
   return (
-    <label htmlFor={props.id} title={props.name}>
+    <label htmlFor={id} title={name}>
       <input
         className='peer hidden'
         type='radio'
         name='toolradio'
-        id={props.id}
-        title={props.id}
+        id={id}
+        title={id}
         onChange={(e) => {
-          props.changeToolState(props.toolNum)
+          changeToolState(toolNum)
           console.log(`Selected - ${e.currentTarget.title}`)
         }}
-        checked={props.toolState == props.toolNum}
+        checked={toolState.tool == toolNum}
       />
       <img
-        src={props.iconpath}
+        src={iconpath}
         alt='some icon'
         className='cursor-pointer rounded-[0.3rem] border-4 border-transparent p-1 peer-checked:border-black hover:bg-gray-700'
       />
