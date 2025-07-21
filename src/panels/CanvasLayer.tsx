@@ -5,8 +5,7 @@ import { ToolProperties } from './Toolbox'
 
 interface CanvasLayerProps {
   canvasId: string
-  ToolPropertiesRef: RefObject<ToolProperties>
-  ToolState: Tools
+  ToolState: ToolProperties
 }
 
 interface polyLineState {
@@ -23,13 +22,9 @@ type Action =
   | { type: 'translate'; index: number; dx: number; dy: number }
   | { type: 'erase'; index: number }
 
-export const CanvasLayer = ({
-  canvasId,
-  ToolPropertiesRef,
-  ToolState
-}: CanvasLayerProps) => {
+export const CanvasLayer = ({ canvasId, ToolState }: CanvasLayerProps) => {
   useEffect(() => {
-    if (ToolState != Tools.Move) {
+    if (ToolState.tool != Tools.Move) {
       selectedPolylineIndexRef.current = -1
       setSelectedIndex(-1)
     }
@@ -49,7 +44,7 @@ export const CanvasLayer = ({
   const [polylineStates, dispatch] = useReducer(polylineReducer, [])
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (ToolState == Tools.Brush && !isDrawing.current) {
+    if (ToolState.tool == Tools.Brush && !isDrawing.current) {
       isDrawing.current = true
       points.current = getRelativePoint(e)
       dispatch({
@@ -57,15 +52,15 @@ export const CanvasLayer = ({
         polyLineState: {
           id: crypto.randomUUID(),
           points: points.current,
-          strokeWidth: ToolPropertiesRef.current?.size || 2,
-          strokeColor: ToolPropertiesRef.current?.color || 'Black',
+          strokeWidth: ToolState.size || 2,
+          strokeColor: ToolState.color || 'Black',
           translateX: 0,
           translateY: 0
         }
       })
     }
 
-    if (ToolState == Tools.Move) {
+    if (ToolState.tool == Tools.Move) {
       const index = selectedPolylineIndexRef.current
       if (index >= 0) {
         isDragging.current = true
@@ -73,13 +68,13 @@ export const CanvasLayer = ({
         dragStart.current = { x, y }
       }
     }
-    if (ToolState == Tools.Eraser) {
+    if (ToolState.tool == Tools.Eraser) {
       isErasing.current = true
     }
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDrawing.current && ToolState == Tools.Brush) {
+    if (isDrawing.current && ToolState.tool == Tools.Brush) {
       const newPoint = getRelativePoint(e)
       points.current += ` ${newPoint}`
       requestAnimationFrame(() => {
@@ -90,7 +85,7 @@ export const CanvasLayer = ({
       })
     }
 
-    if (isDragging.current && ToolState == Tools.Move) {
+    if (isDragging.current && ToolState.tool == Tools.Move) {
       const index = selectedPolylineIndexRef.current
       if (index >= 0) {
         const { x, y } = getMouseCoords(e)
@@ -106,19 +101,19 @@ export const CanvasLayer = ({
         })
       }
     }
-    if (isErasing.current && ToolState == Tools.Eraser) {
+    if (isErasing.current && ToolState.tool == Tools.Eraser) {
     }
   }
 
   const handleMouseUp = () => {
-    if (ToolState == Tools.Brush) {
+    if (ToolState.tool == Tools.Brush) {
       isDrawing.current = false
     }
 
-    if (ToolState == Tools.Move) {
+    if (ToolState.tool == Tools.Move) {
       isDragging.current = false
     }
-    if (ToolState == Tools.Eraser) {
+    if (ToolState.tool == Tools.Eraser) {
       isErasing.current = false
     }
   }
@@ -158,9 +153,9 @@ export const CanvasLayer = ({
               if (el) polylinesRef.current[index] = el
             }}
             className={`fill-none ${
-              selectedIndex == index && ToolState == Tools.Move
+              selectedIndex == index && ToolState.tool == Tools.Move
                 ? 'pointer-events-none'
-                : ToolState == Tools.Move || ToolState == Tools.Eraser
+                : ToolState.tool == Tools.Move || ToolState.tool == Tools.Eraser
                   ? 'pointer-events-auto hover:cursor-pointer'
                   : ''
             }`}
@@ -170,14 +165,14 @@ export const CanvasLayer = ({
               translate: `${state.translateX}px ${state.translateY}px`
             }}
             onClick={(e) => {
-              if (ToolState == Tools.Move) {
+              if (ToolState.tool == Tools.Move) {
                 selectedPolylineIndexRef.current = index
                 setSelectedIndex(index)
                 e.stopPropagation()
               }
             }}
             onMouseEnter={(e) => {
-              if (ToolState == Tools.Eraser && isErasing.current) {
+              if (ToolState.tool == Tools.Eraser && isErasing.current) {
                 dispatch({
                   type: 'erase',
                   index
