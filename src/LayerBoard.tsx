@@ -6,7 +6,6 @@ import './styles/utils.css'
 import { Tools } from './enums/tools'
 import { CanvasContainer, CanvasHandle } from './panels/CanvasContainer'
 import { ToolProperties } from './panels/Toolbox'
-// import { BrushCursor } from './assets/Cursors'
 
 function LayerBoard() {
   const CanvasContainerRef: RefObject<CanvasHandle | null> =
@@ -24,8 +23,6 @@ function LayerBoard() {
   return (
     <div className='h-full'>
       <div className='absolute top-55 flex flex-col'>
-        {/* <BrushCursor fillColor={ToolState.color || '#000000'} /> */}
-
         <Toolbox
           className='m-1 flex flex-col items-center rounded-md border-2 p-1'
           ToolState={ToolState}

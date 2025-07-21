@@ -9,8 +9,8 @@ interface ToolboxProps {
   changeToolState: Dispatch<SetStateAction<ToolProperties>>
 }
 export interface ToolProperties {
-  color?: `#${string}`
-  size?: number
+  color: `#${string}`
+  size: number
   tool: Tools
 }
 //@todo - remove button
