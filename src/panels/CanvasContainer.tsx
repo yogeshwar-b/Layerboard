@@ -2,6 +2,8 @@ import { useImperativeHandle, useReducer } from 'react'
 import '../styles/utils.css'
 import { CanvasLayer } from './CanvasLayer'
 import { ToolProperties } from './Toolbox'
+import { Tools } from '../enums/tools'
+import { useCustomCursor } from '../assets/Cursors'
 
 export interface CanvasHandle {
   CanvasAdd: (name: string) => void
@@ -49,8 +51,20 @@ export const CanvasContainer = ({
       })
     }
   }))
+  const customCursor = useCustomCursor({
+    color: ToolState.tool == Tools.Brush ? ToolState.color : 'white',
+    size: ToolState.tool == Tools.Brush ? ToolState.size : 24
+  })
   return (
-    <div className='top-left canvas-container absolute h-full w-full'>
+    <div
+      className={`top-left canvas-container absolute h-full w-full`}
+      style={{
+        cursor:
+          ToolState.tool == Tools.Brush || ToolState.tool == Tools.Eraser
+            ? customCursor
+            : 'auto'
+      }}
+    >
       {CanvasList.map((c: string) => {
         return <CanvasLayer canvasId={c} key={c} ToolState={ToolState} />
       })}
