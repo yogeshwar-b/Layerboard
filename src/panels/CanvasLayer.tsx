@@ -206,8 +206,10 @@ export const CanvasLayer = ({
             translateY: poly.translateY + action.dy
           }
         })
-      case 'erase':
+      case 'erase': {
+        polylinesRef.current.splice(action.index, 1)
         return polylines.filter((_, i) => i !== action.index)
+      }
       default:
         return polylines
     }
