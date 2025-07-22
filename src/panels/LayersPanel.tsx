@@ -21,9 +21,10 @@ export const LayersPanel = ({
   ActiveLayer,
   CanvasContainerRef
 }: LayersPanelProps) => {
-  const [layerStates, dispatch] = useReducer(layerButtonsReducer, [
-    { name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }
-  ])
+  const [layerStates, dispatch]: [LayerState[], React.Dispatch<Action>] =
+    useReducer(layerButtonsReducer, [
+      { name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }
+    ])
   const layerPanelRef = useRef<HTMLDivElement>(null)
   const draggedLayer = useRef<string>('')
   const draggedOverLayer = useRef<string>('')
@@ -37,6 +38,12 @@ export const LayersPanel = ({
       CanvasIdPrefix + String(ActiveLayer.current)
     )
     if (newlayer) newlayer.style.pointerEvents = 'auto'
+  }
+
+  const handleVisibilityToggle = (layerId: string, isChecked: boolean) => {
+    if (CanvasContainerRef?.current) {
+      CanvasContainerRef.current.CanvasToggleVisibility(layerId, isChecked)
+    }
   }
 
   const handleDragStart = (layerId: string) => {
@@ -85,7 +92,7 @@ export const LayersPanel = ({
       <div>Layers</div>
       <div>
         <button
-          className='active:bg-[rgba(0, 0, 0, 0.2)] mr-1 h-8 w-8 cursor-pointer rounded-lg border-1 border-solid border-black bg-transparent p-1 hover:bg-[rgba(0,0,0,0.1)]'
+          className='active:bg-[rgba(0, 0, 0, 0.2)] mr-1 h-8 w-8 cursor-pointer rounded-lg bg-transparent p-1 shadow-[0_0_5px_rgba(0,0,0,0.2)] transition-all duration-150 hover:scale-105 hover:bg-[rgba(0,0,0,0.1)]'
           onClick={() => {
             let layername = 'Layer ' + (layerStates.length + 1)
             let layerId = crypto.randomUUID()
@@ -103,7 +110,7 @@ export const LayersPanel = ({
           +
         </button>
         <button
-          className='active:bg-[rgba(0, 0, 0, 0.2)] mr-1 h-8 w-8 cursor-pointer rounded-lg border-1 border-solid border-black bg-transparent p-1 hover:bg-[rgba(0,0,0,0.1)]'
+          className='active:bg-[rgba(0, 0, 0, 0.2)] mr-1 h-8 w-8 cursor-pointer rounded-lg bg-transparent p-1 shadow-[0_0_5px_rgba(0,0,0,0.2)] transition-all duration-150 hover:scale-105 hover:bg-[rgba(0,0,0,0.1)]'
           onClick={() => {
             console.log(
               'on click deleting  ' + ActiveLayer.current + ' in layer panel'
@@ -120,14 +127,15 @@ export const LayersPanel = ({
           -
         </button>
       </div>
-      <div className='flex flex-col-reverse'>
+      <div className='flex w-full flex-col-reverse'>
         {layerStates.map((i) => {
           return (
             <LayerButton
               key={i.order}
               name={i.name}
               id={i.id}
-              onChecked={setActiveLayer}
+              onSelected={setActiveLayer}
+              onChecked={handleVisibilityToggle}
               ActiveLayer={ActiveLayer}
               order={i.order}
               handleDragStart={handleDragStart}
@@ -143,16 +151,12 @@ export const LayersPanel = ({
 }
 
 //@todo use typeguards here to ensure that the action is of type action
-interface action {
-  type: string
-  activeLayer?: React.RefObject<string>
-  name?: string
-  id: string
-  fromIdx?: number
-  toIdx?: number
-}
+type Action =
+  | { type: 'Add'; name: string; id: string; activeLayer: RefObject<string> }
+  | { type: 'Delete'; id: string; activeLayer: RefObject<string> }
+  | { type: 'DragAndDrop'; fromIdx: number; toIdx: number; id: string }
 
-function layerButtonsReducer(layerStates: Array<LayerState>, action: action) {
+function layerButtonsReducer(layerStates: Array<LayerState>, action: Action) {
   switch (action.type) {
     case 'Add':
       return [

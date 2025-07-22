@@ -9,34 +9,40 @@ export interface CanvasHandle {
   CanvasAdd: (name: string) => void
   CanvasDel: (name: string) => void
   CanvasSync: (fromIdx: number, toIdx: number) => void
+  CanvasToggleVisibility: (name: string, isVisible: Boolean) => void
 }
 interface CanvasContainerProps {
   ActiveLayer: React.RefObject<string>
   ref: React.RefObject<CanvasHandle | null>
   ToolState: ToolProperties
 }
+
+export interface CanvasState {
+  Id: string
+  isVisible: Boolean
+}
+
 export const CanvasContainer = ({
   ActiveLayer,
   ref,
   ToolState
 }: CanvasContainerProps) => {
-  const [CanvasList, dispatch] = useReducer(CanvasReducer, [
-    ActiveLayer.current
-  ])
+  const [CanvasList, dispatch]: [CanvasState[], React.Dispatch<Action>] =
+    useReducer(CanvasReducer, [{ Id: ActiveLayer.current, isVisible: true }])
   useImperativeHandle(ref, () => ({
     test() {
       console.log('testcalled')
     },
     CanvasDel(name: string) {
       console.log(`deleting ${name} from ${CanvasList}`)
-      if (CanvasList.includes(name)) {
+      if (CanvasList.find((c) => c.Id === name)) {
         dispatch({ type: 'delete', canvasName: name })
       } else {
         console.log('not found')
       }
     },
     CanvasAdd(name: string) {
-      if (CanvasList.includes(name)) {
+      if (CanvasList.find((c) => c.Id === name)) {
         dispatch({ type: 'add', canvasName: name + '(1)' })
       } else {
         dispatch({ type: 'add', canvasName: name })
@@ -48,6 +54,13 @@ export const CanvasContainer = ({
         canvasName: '',
         fromIdx: fromIdx,
         toIdx: toIdx
+      })
+    },
+    CanvasToggleVisibility(name: string, isVisible: Boolean) {
+      dispatch({
+        type: 'toggleVisibility',
+        canvasName: name,
+        isVisible: isVisible
       })
     }
   }))
@@ -65,28 +78,37 @@ export const CanvasContainer = ({
             : 'auto'
       }}
     >
-      {CanvasList.map((c: string) => {
-        return <CanvasLayer canvasId={c} key={c} ToolState={ToolState} />
+      {CanvasList.map((canvasState) => {
+        return (
+          <CanvasLayer
+            canvasState={canvasState}
+            key={canvasState.Id}
+            ToolState={ToolState}
+          />
+        )
       })}
     </div>
   )
 }
 
-interface action {
-  type: string
-  canvasName: string
-  layerState?: string[]
-  fromIdx?: number
-  toIdx?: number
-}
-const CanvasReducer = (CanvasList: string[], action: action) => {
+type Action =
+  | { type: 'add'; canvasName: string }
+  | { type: 'delete'; canvasName: string }
+  | {
+      type: 'syncWithLayerPanel'
+      fromIdx?: number
+      toIdx?: number
+      canvasName: string
+    }
+  | { type: 'toggleVisibility'; canvasName: string; isVisible: Boolean }
+const CanvasReducer = (CanvasList: CanvasState[], action: Action) => {
   switch (action.type) {
     case 'add':
-      return [...CanvasList, action.canvasName]
+      return [...CanvasList, { Id: action.canvasName, isVisible: true }]
     case 'delete':
       console.log(`deleting ${action.canvasName} from ${CanvasList}`)
       return CanvasList.filter((c) => {
-        if (c != action.canvasName) return c
+        if (c.Id != action.canvasName) return c
       })
     case 'syncWithLayerPanel':
       if (action.fromIdx !== undefined && action.toIdx !== undefined) {
@@ -97,6 +119,14 @@ const CanvasReducer = (CanvasList: string[], action: action) => {
       } else {
         return CanvasList
       }
+    case 'toggleVisibility':
+      return CanvasList.map((canvasState) => {
+        if (canvasState.Id === action.canvasName) {
+          return { ...canvasState, isVisible: action.isVisible }
+        } else {
+          return canvasState
+        }
+      })
 
     default:
       return CanvasList
