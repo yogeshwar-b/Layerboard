@@ -18,7 +18,7 @@ function LayerBoard() {
   ] = useState<ToolProperties>({
     tool: Tools.Brush,
     color: '#000000',
-    size: 5
+    size: 12
   })
   return (
     <div className='h-full'>

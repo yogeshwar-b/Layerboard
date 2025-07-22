@@ -37,7 +37,7 @@ export const ColorPalette = ({
     <div
       className={`absolute bottom-2 z-[100] flex w-full overflow-clip ${ToolState.tool != Tools.Brush ? 'opacity-0' : 'opacity-100'} justify-center transition-all duration-300`}
     >
-      <div className='flex flex-wrap rounded-lg border-2 border-solid border-black p-1'>
+      <div className='flex rounded-lg border-2 border-solid border-black p-1'>
         {paletteColors.map((color, index) => (
           <div
             key={index}

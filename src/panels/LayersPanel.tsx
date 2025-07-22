@@ -120,7 +120,7 @@ export const LayersPanel = ({
           -
         </button>
       </div>
-      <div className='flex flex-col-reverse'>
+      <div className='flex w-full flex-col-reverse'>
         {layerStates.map((i) => {
           return (
             <LayerButton

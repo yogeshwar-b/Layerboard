@@ -29,10 +29,20 @@ export const LayerButton = (props: LayerButtonProps) => {
         type='radio'
         id={props.id}
         name={'layer-select'}
+        className='peer hidden'
         defaultChecked={props.ActiveLayer.current === props.id}
       />
-      <label htmlFor={props.id} className='align-right ml-1 cursor-pointer'>
+      <label
+        htmlFor={props.id}
+        className='align-right mt-1 mb-1 w-full cursor-pointer rounded-lg p-1 peer-checked:bg-blue-200'
+      >
         {props.name}
+        <input
+          className='ml-1'
+          type='checkbox'
+          name='layerEnable'
+          id='layerEnable'
+        />
       </label>
     </div>
   )
