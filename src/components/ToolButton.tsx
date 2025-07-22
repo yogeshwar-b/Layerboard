@@ -36,7 +36,7 @@ export const ToolButton = ({
       <img
         src={iconpath}
         alt='some icon'
-        className='cursor-pointer rounded-[0.3rem] border-4 border-transparent p-1 peer-checked:border-black hover:bg-gray-700'
+        className='m-1 cursor-pointer rounded-[0.3rem] border-4 border-transparent p-1 shadow-[0_0_5px_rgba(0,0,0,0.2)] transition-all duration-150 peer-checked:border-black hover:scale-110 hover:bg-gray-700'
       />
     </label>
   )

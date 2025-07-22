@@ -24,14 +24,14 @@ function LayerBoard() {
     <div className='h-full'>
       <div className='absolute top-55 flex flex-col'>
         <Toolbox
-          className='m-1 flex flex-col items-center rounded-md border-2 p-1'
+          className='m-1 flex flex-col items-center rounded-md p-1 shadow-[0_0_5px_rgba(0,0,0,0.2)]'
           ToolState={ToolState}
           changeToolState={changeToolState}
         />
       </div>
 
       <LayersPanel
-        className='absolute top-0 right-0 m-1 rounded-md border-2 p-1'
+        className='absolute top-0 right-0 m-1 rounded-md p-1 shadow-[0_0_5px_rgba(0,0,0,0.2)]'
         CanvasContainerRef={CanvasContainerRef}
         ActiveLayer={ActiveLayer}
       />

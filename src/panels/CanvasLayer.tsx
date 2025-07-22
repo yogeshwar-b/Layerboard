@@ -2,9 +2,10 @@ import { RefObject, useEffect, useReducer, useRef, useState } from 'react'
 import { Tools } from '../enums/tools'
 import { CanvasIdPrefix } from '../constants'
 import { ToolProperties } from './Toolbox'
+import { CanvasState } from './CanvasContainer'
 
 interface CanvasLayerProps {
-  canvasId: string
+  canvasState: CanvasState
   ToolState: ToolProperties
 }
 
@@ -22,7 +23,10 @@ type Action =
   | { type: 'translate'; index: number; dx: number; dy: number }
   | { type: 'erase'; index: number }
 
-export const CanvasLayer = ({ canvasId, ToolState }: CanvasLayerProps) => {
+export const CanvasLayer = ({
+  canvasState: { Id: canvasId, isVisible },
+  ToolState
+}: CanvasLayerProps) => {
   useEffect(() => {
     if (ToolState.tool != Tools.Move) {
       selectedPolylineIndexRef.current = -1
@@ -135,7 +139,7 @@ export const CanvasLayer = ({ canvasId, ToolState }: CanvasLayerProps) => {
   return (
     <svg
       ref={svgRef}
-      className='absolute h-full w-full'
+      className={`absolute h-full w-full ${isVisible ? '' : 'hidden'}`}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
