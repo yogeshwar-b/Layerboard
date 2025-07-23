@@ -7,6 +7,7 @@ import { CanvasState } from './CanvasContainer'
 interface CanvasLayerProps {
   canvasState: CanvasState
   ToolState: ToolProperties
+  ActiveLayer: string
 }
 
 interface polyLineState {
@@ -25,14 +26,13 @@ type Action =
 
 export const CanvasLayer = ({
   canvasState: { Id: canvasId, isVisible },
-  ToolState
+  ToolState,
+  ActiveLayer
 }: CanvasLayerProps) => {
   useEffect(() => {
-    if (ToolState.tool != Tools.Move) {
-      selectedPolylineIndexRef.current = -1
-      setSelectedIndex(-1)
-    }
-  }, [ToolState])
+    selectedPolylineIndexRef.current = -1
+    setSelectedIndex(-1)
+  }, [ToolState, ActiveLayer])
 
   const svgRef = useRef<SVGSVGElement>(null)
   const isDrawing = useRef(false)
@@ -139,7 +139,7 @@ export const CanvasLayer = ({
   return (
     <svg
       ref={svgRef}
-      className={`absolute h-full w-full ${isVisible ? '' : 'hidden'}`}
+      className={`absolute h-full w-full ${isVisible ? '' : 'hidden'} ${ActiveLayer == canvasId ? 'pointer-events-auto' : 'pointer-events-none'}`}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -149,7 +149,11 @@ export const CanvasLayer = ({
       {polylineStates.map((state, index) => (
         <g key={state.id}>
           {selectedIndex == index && (
-            <MoveBoxSVG polylinesRef={polylinesRef} polylineIndex={index} />
+            <MoveBoxSVG
+              polylinesRef={polylinesRef}
+              polylineIndex={index}
+              // strokeWidth={ToolState.size}
+            />
           )}
           <polyline
             points={state.points}
@@ -219,13 +223,14 @@ export const CanvasLayer = ({
 const MoveBoxSVG = ({
   polylinesRef,
   polylineIndex
+  // strokeWidth
 }: {
   polylinesRef: RefObject<(SVGPolylineElement | null)[]>
   polylineIndex: number
+  // strokeWidth: number
 }) => {
   const polylineRect =
     polylinesRef.current[polylineIndex]?.getBoundingClientRect()
-  // console.log(polylineRect)
   return (
     <svg className='absolute fill-blue-50 opacity-75 hover:cursor-move'>
       <rect
@@ -233,7 +238,7 @@ const MoveBoxSVG = ({
         height={polylineRect?.height}
         x={polylineRect?.x}
         y={polylineRect?.y}
-        stroke-width='1.5'
+        stroke-width='1'
         stroke='lightsteelblue'
       />
     </svg>

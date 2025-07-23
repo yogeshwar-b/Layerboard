@@ -4,8 +4,7 @@ interface LayerButtonProps {
   name: string
   onSelected: (x: string) => void
   onChecked: (layerId: string, isChecked: boolean) => void
-  ActiveLayer: React.RefObject<string>
-  order: number
+  ActiveLayer: string
   id: string
   handleDragStart: (layerId: string) => void
   handleDragEnter: (layerId: string) => void
@@ -13,31 +12,41 @@ interface LayerButtonProps {
   handleDragOver: (e: React.DragEvent<HTMLDivElement>) => void
 }
 
-export const LayerButton = (props: LayerButtonProps) => {
+export const LayerButton = ({
+  onChecked,
+  onSelected,
+  name,
+  ActiveLayer,
+  id,
+  handleDragEnd,
+  handleDragEnter,
+  handleDragStart,
+  handleDragOver
+}: LayerButtonProps) => {
   return (
     <div
       className='flex flex-row transition-all duration-150 hover:scale-105'
-      onDragStart={() => props.handleDragStart(props.id)}
-      onDragEnter={() => props.handleDragEnter(props.id)}
-      onDragEnd={props.handleDragEnd}
-      onDragOver={props.handleDragOver}
+      onDragStart={() => handleDragStart(id)}
+      onDragEnter={() => handleDragEnter(id)}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
       draggable='true'
     >
       <input
         onClick={() => {
-          props.onSelected(props.id)
+          onSelected(id)
         }}
         type='radio'
-        id={props.id}
+        id={id}
         name={'layer-select'}
         className='peer hidden'
-        defaultChecked={props.ActiveLayer.current === props.id}
+        defaultChecked={ActiveLayer === id}
       />
       <label
-        htmlFor={props.id}
+        htmlFor={id}
         className='align-right mt-1 mb-1 w-full cursor-pointer rounded-lg p-1 shadow-[0_0_5px_rgba(0,0,0,0.2)] peer-checked:bg-blue-200'
       >
-        {props.name}
+        {name}
         <input
           className='ml-1'
           type='checkbox'
@@ -45,8 +54,7 @@ export const LayerButton = (props: LayerButtonProps) => {
           id='layerVisible'
           defaultChecked
           onChange={(e) => {
-            console.log(` ${props.id} is ${e.target.checked}`)
-            props.onChecked(props.id, e.target.checked)
+            onChecked(id, e.target.checked)
           }}
         />
       </label>

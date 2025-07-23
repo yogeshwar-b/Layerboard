@@ -62,7 +62,6 @@ export const ColorPalette = ({
             }`}
             style={{ backgroundColor: color }}
             onClick={() => {
-              console.log(`Selected color: ${color}`)
               changeToolState({
                 ...ToolState,
                 color: color as `#${string}`

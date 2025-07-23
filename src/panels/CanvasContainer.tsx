@@ -12,9 +12,10 @@ export interface CanvasHandle {
   CanvasToggleVisibility: (name: string, isVisible: Boolean) => void
 }
 interface CanvasContainerProps {
-  ActiveLayer: React.RefObject<string>
+  ActiveLayer: string
   ref: React.RefObject<CanvasHandle | null>
   ToolState: ToolProperties
+  setActiveLayer: React.Dispatch<React.SetStateAction<string>>
 }
 
 export interface CanvasState {
@@ -28,13 +29,12 @@ export const CanvasContainer = ({
   ToolState
 }: CanvasContainerProps) => {
   const [CanvasList, dispatch]: [CanvasState[], React.Dispatch<Action>] =
-    useReducer(CanvasReducer, [{ Id: ActiveLayer.current, isVisible: true }])
+    useReducer(CanvasReducer, [{ Id: ActiveLayer, isVisible: true }])
   useImperativeHandle(ref, () => ({
     test() {
       console.log('testcalled')
     },
     CanvasDel(name: string) {
-      console.log(`deleting ${name} from ${CanvasList}`)
       if (CanvasList.find((c) => c.Id === name)) {
         dispatch({ type: 'delete', canvasName: name })
       } else {
@@ -84,6 +84,7 @@ export const CanvasContainer = ({
             canvasState={canvasState}
             key={canvasState.Id}
             ToolState={ToolState}
+            ActiveLayer={ActiveLayer}
           />
         )
       })}
@@ -106,7 +107,6 @@ const CanvasReducer = (CanvasList: CanvasState[], action: Action) => {
     case 'add':
       return [...CanvasList, { Id: action.canvasName, isVisible: true }]
     case 'delete':
-      console.log(`deleting ${action.canvasName} from ${CanvasList}`)
       return CanvasList.filter((c) => {
         if (c.Id != action.canvasName) return c
       })

@@ -10,7 +10,7 @@ import { ToolProperties } from './panels/Toolbox'
 function LayerBoard() {
   const CanvasContainerRef: RefObject<CanvasHandle | null> =
     useRef<CanvasHandle>(null)
-  const ActiveLayer: RefObject<string> = useRef<string>(crypto.randomUUID())
+  const [ActiveLayer, setActiveLayer] = useState<string>(crypto.randomUUID())
 
   const [ToolState, changeToolState]: [
     ToolProperties,
@@ -34,12 +34,14 @@ function LayerBoard() {
         className='absolute top-0 right-0 m-1 rounded-md p-1 shadow-[0_0_5px_rgba(0,0,0,0.2)]'
         CanvasContainerRef={CanvasContainerRef}
         ActiveLayer={ActiveLayer}
+        setActiveLayer={setActiveLayer}
       />
       <ColorPalette ToolState={ToolState} changeToolState={changeToolState} />
       <CanvasContainer
         ref={CanvasContainerRef}
-        ActiveLayer={ActiveLayer}
         ToolState={ToolState}
+        setActiveLayer={setActiveLayer}
+        ActiveLayer={ActiveLayer}
       />
     </div>
   )
