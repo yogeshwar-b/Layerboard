@@ -27,9 +27,8 @@ export const ToolButton = ({
         name='toolradio'
         id={id}
         title={id}
-        onChange={(e) => {
+        onChange={() => {
           changeToolState(toolNum)
-          console.log(`Selected - ${e.currentTarget.title}`)
         }}
         checked={toolState.tool == toolNum}
       />

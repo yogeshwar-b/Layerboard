@@ -2,12 +2,12 @@ import { RefObject, useReducer, useRef } from 'react'
 import { LayerButton } from '../components/LayerButton'
 import '../styles/utils.css'
 import { CanvasHandle } from './CanvasContainer'
-import { CanvasIdPrefix } from '../constants'
 
 interface LayersPanelProps {
   className: string
   CanvasContainerRef: RefObject<CanvasHandle | null>
-  ActiveLayer: RefObject<string>
+  ActiveLayer: string
+  setActiveLayer: React.Dispatch<React.SetStateAction<string>>
 }
 interface LayerState {
   name: string
@@ -19,25 +19,19 @@ interface LayerState {
 export const LayersPanel = ({
   className,
   ActiveLayer,
-  CanvasContainerRef
+  CanvasContainerRef,
+  setActiveLayer
 }: LayersPanelProps) => {
   const [layerStates, dispatch]: [LayerState[], React.Dispatch<Action>] =
     useReducer(layerButtonsReducer, [
-      { name: 'Layer 1', id: ActiveLayer.current, order: 0, checked: true }
+      { name: 'Layer 1', id: ActiveLayer, order: 0, checked: true }
     ])
   const layerPanelRef = useRef<HTMLDivElement>(null)
   const draggedLayer = useRef<string>('')
   const draggedOverLayer = useRef<string>('')
-  function setActiveLayer(currLayer: string) {
-    let prevlayer = document.getElementById(
-      CanvasIdPrefix + String(ActiveLayer.current)
-    )
-    if (prevlayer) prevlayer.style.pointerEvents = 'none'
-    ActiveLayer.current = currLayer
-    let newlayer = document.getElementById(
-      CanvasIdPrefix + String(ActiveLayer.current)
-    )
-    if (newlayer) newlayer.style.pointerEvents = 'auto'
+
+  function handleActiveLayerChange(currLayer: string) {
+    setActiveLayer(currLayer)
   }
 
   const handleVisibilityToggle = (layerId: string, isChecked: boolean) => {
@@ -55,7 +49,6 @@ export const LayersPanel = ({
   }
 
   const handleDragEnd = () => {
-    console.log('dragging ended')
     if (
       draggedLayer.current !== '' &&
       draggedOverLayer.current !== '' &&
@@ -104,7 +97,7 @@ export const LayersPanel = ({
               name: layername,
               id: layerId
             })
-            setActiveLayer(layerId)
+            handleActiveLayerChange(layerId)
           }}
         >
           +
@@ -112,16 +105,13 @@ export const LayersPanel = ({
         <button
           className='active:bg-[rgba(0, 0, 0, 0.2)] mr-1 h-8 w-8 cursor-pointer rounded-lg bg-transparent p-1 shadow-[0_0_5px_rgba(0,0,0,0.2)] transition-all duration-150 hover:scale-105 hover:bg-[rgba(0,0,0,0.1)]'
           onClick={() => {
-            console.log(
-              'on click deleting  ' + ActiveLayer.current + ' in layer panel'
-            )
             dispatch({
               type: 'Delete',
               activeLayer: ActiveLayer,
-              id: ActiveLayer.current
+              id: ActiveLayer
             })
             if (CanvasContainerRef?.current)
-              CanvasContainerRef.current.CanvasDel(String(ActiveLayer.current))
+              CanvasContainerRef.current.CanvasDel(String(ActiveLayer))
           }}
         >
           -
@@ -137,7 +127,6 @@ export const LayersPanel = ({
               onSelected={setActiveLayer}
               onChecked={handleVisibilityToggle}
               ActiveLayer={ActiveLayer}
-              order={i.order}
               handleDragStart={handleDragStart}
               handleDragEnter={handleDragEnter}
               handleDragEnd={handleDragEnd}
@@ -152,8 +141,8 @@ export const LayersPanel = ({
 
 //@todo use typeguards here to ensure that the action is of type action
 type Action =
-  | { type: 'Add'; name: string; id: string; activeLayer: RefObject<string> }
-  | { type: 'Delete'; id: string; activeLayer: RefObject<string> }
+  | { type: 'Add'; name: string; id: string; activeLayer: string }
+  | { type: 'Delete'; id: string; activeLayer: string }
   | { type: 'DragAndDrop'; fromIdx: number; toIdx: number; id: string }
 
 function layerButtonsReducer(layerStates: Array<LayerState>, action: Action) {
@@ -169,7 +158,6 @@ function layerButtonsReducer(layerStates: Array<LayerState>, action: Action) {
         }
       ]
     case 'Delete':
-      console.log('deleting ' + action.id + ' in layer panel')
       return layerStates.filter((x) => {
         if (x.id != action.id) return x
       })
